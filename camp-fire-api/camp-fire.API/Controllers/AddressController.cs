@@ -18,7 +18,7 @@ public class AddressController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet(Name = "GetWeatherForecast")]
+    [HttpGet]
     public IEnumerable<object> Get()
     {
         return Enumerable.Range(1, 5).Select(index => new

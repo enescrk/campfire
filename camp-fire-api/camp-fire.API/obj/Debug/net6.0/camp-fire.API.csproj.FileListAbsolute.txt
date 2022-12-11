@@ -25,3 +25,14 @@ D:\project\campfire\camp-fire-api\camp-fire.API\obj\Debug\net6.0\refint\camp-fir
 D:\project\campfire\camp-fire-api\camp-fire.API\obj\Debug\net6.0\camp-fire.API.pdb
 D:\project\campfire\camp-fire-api\camp-fire.API\obj\Debug\net6.0\camp-fire.API.genruntimeconfig.cache
 D:\project\campfire\camp-fire-api\camp-fire.API\obj\Debug\net6.0\ref\camp-fire.API.dll
+D:\project\campfire\camp-fire-api\camp-fire.API\bin\Debug\net6.0\Microsoft.AspNetCore.Connections.Abstractions.dll
+D:\project\campfire\camp-fire-api\camp-fire.API\bin\Debug\net6.0\Microsoft.AspNetCore.Http.Connections.Client.dll
+D:\project\campfire\camp-fire-api\camp-fire.API\bin\Debug\net6.0\Microsoft.AspNetCore.Http.Connections.Common.dll
+D:\project\campfire\camp-fire-api\camp-fire.API\bin\Debug\net6.0\Microsoft.AspNetCore.SignalR.Client.dll
+D:\project\campfire\camp-fire-api\camp-fire.API\bin\Debug\net6.0\Microsoft.AspNetCore.SignalR.Client.Core.dll
+D:\project\campfire\camp-fire-api\camp-fire.API\bin\Debug\net6.0\Microsoft.AspNetCore.SignalR.Common.dll
+D:\project\campfire\camp-fire-api\camp-fire.API\bin\Debug\net6.0\Microsoft.AspNetCore.SignalR.Protocols.Json.dll
+D:\project\campfire\camp-fire-api\camp-fire.API\bin\Debug\net6.0\Microsoft.Extensions.DependencyInjection.dll
+D:\project\campfire\camp-fire-api\camp-fire.API\bin\Debug\net6.0\Microsoft.Extensions.Features.dll
+D:\project\campfire\camp-fire-api\camp-fire.API\bin\Debug\net6.0\Microsoft.Extensions.Logging.Abstractions.dll
+D:\project\campfire\camp-fire-api\camp-fire.API\bin\Debug\net6.0\System.IO.Pipelines.dll

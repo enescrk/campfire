@@ -1,0 +1,15 @@
+using camp_fire.Domain.Enums;
+
+namespace camp_fire.Domain.Entities;
+
+public class User
+{
+    public string? Name { get; set; }
+    public string? Surname { get; set; }
+    public int[]? AuthorizedCompanies { get; set; }
+    public GenderType GenderType { get; set; }
+    public int? AddressId { get; set; }
+    public string? Mail { get; set; }
+    public UserType UserType { get; set; }
+    public string? PhoneNumber { get; set; }
+}

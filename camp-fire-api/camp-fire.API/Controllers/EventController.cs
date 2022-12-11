@@ -19,11 +19,11 @@ public class EventController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult Get()
+    public async Task<IActionResult> Get()
     {
-        var foo = _hub.Clients.All.SendAsync("hubData", Foo());
+        await _hub.Clients.All.SendAsync("hubData", Foo());
 
-        return Ok(foo);
+        return Ok();
     }
 
     private string Foo()

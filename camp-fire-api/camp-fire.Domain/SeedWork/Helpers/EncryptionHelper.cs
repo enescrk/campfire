@@ -7,14 +7,14 @@ namespace camp_fire.Domain.SeedWork.Helpers
 {
     public static class EncryptionHelper
     {
-        public static string EncryptPassword(this string password)
-        {
-            var byteData = Encoding.Unicode.GetBytes(password);
+        // public static string EncryptPassword(this string password)
+        // {
+        //     var byteData = Encoding.Unicode.GetBytes(password);
 
-            var byteEncryptSha1 = new SHA1CryptoServiceProvider().ComputeHash(byteData);
+        //     var byteEncryptSha1 = new SHA1CryptoServiceProvider().ComputeHash(byteData);
 
-            return Convert.ToBase64String(byteEncryptSha1);
-        }
+        //     return Convert.ToBase64String(byteEncryptSha1);
+        // }
 
         private static string EncryptionKey => "campfire2023";
 

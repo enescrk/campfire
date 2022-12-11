@@ -12,6 +12,7 @@
             "program": "${workspaceFolder}/camp-fire-api/camp-fire.API/bin/Debug/net6.0/camp-fire.API.dll",
             "args": [],
             "cwd": "${workspaceFolder}/camp-fire-api/camp-fire.API",
+            "requireExactSource": false,
             "stopAtEntry": false,
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development"

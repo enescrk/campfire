@@ -1,4 +1,6 @@
+using camp_fire.API.Hubs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace camp_fire.API.Controllers;
 
@@ -6,27 +8,26 @@ namespace camp_fire.API.Controllers;
 [Route("[controller]")]
 public class EventController : ControllerBase
 {
-    private static readonly string[] Summaries = new[]
-    {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
-
     private readonly ILogger<EventController> _logger;
+    private readonly IHubContext<EventHub> _hub;
 
-    public EventController(ILogger<EventController> logger)
+    public EventController(ILogger<EventController> logger,
+                            IHubContext<EventHub> hub)
     {
         _logger = logger;
+        _hub = hub;
     }
 
     [HttpGet]
-    public IEnumerable<object> Get()
+    public IActionResult Get()
     {
-        return Enumerable.Range(1, 5).Select(index => new
-        {
-            Date = DateTime.Now.AddDays(index),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-        })
-        .ToArray();
+        var foo = _hub.Clients.All.SendAsync("hubData", Foo());
+
+        return Ok(foo);
+    }
+
+    private string Foo()
+    {
+        return "test";
     }
 }

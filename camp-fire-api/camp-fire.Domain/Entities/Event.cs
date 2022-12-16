@@ -1,6 +1,8 @@
+using camp_fire.Domain.Entities.Base;
+
 namespace camp_fire.Domain.Entities;
 
-public class Event
+public class Event : BaseEntity
 {
     public string? Name { get; set; }
     public DateTime Date { get; set; }

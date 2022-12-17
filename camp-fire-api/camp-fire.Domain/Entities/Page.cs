@@ -9,6 +9,4 @@ public class Page : BaseEntity
 
     public virtual Event? Event { get; set; }
     public virtual Scoreboard? Scoreboard { get; set; }
-
-
 }

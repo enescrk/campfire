@@ -12,10 +12,4 @@ public class Address : BaseEntity
 
     public virtual User User { get; set; }
     public virtual Country Country { get; set; }
-    
-    
-
-     
-
-
 }

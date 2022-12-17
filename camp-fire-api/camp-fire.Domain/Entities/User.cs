@@ -8,9 +8,14 @@ public class User : BaseEntity
     public string? Name { get; set; }
     public string? Surname { get; set; }
     public int[]? AuthorizedCompanies { get; set; }
-    public GenderType GenderType { get; set; }
+     //male=true female=false
+    public bool Gender { get; set; }
     public int? AddressId { get; set; }
     public string? EMail { get; set; }
     public UserType UserType { get; set; }
     public string? PhoneNumber { get; set; }
+
+    public virtual ICollection<Event> Event { get; set; }
+    public virtual Address Adress { get; set; }
+
 }

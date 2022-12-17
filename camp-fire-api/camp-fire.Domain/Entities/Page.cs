@@ -5,4 +5,10 @@ namespace camp_fire.Domain.Entities;
 public class Page : BaseEntity
 {
     public string? Name { get; set; }
+    public int EventId { get; set; }
+
+    public virtual Event? Event { get; set; }
+    public virtual Scoreboard? Scoreboard { get; set; }
+
+
 }

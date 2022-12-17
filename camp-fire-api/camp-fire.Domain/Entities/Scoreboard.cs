@@ -8,4 +8,11 @@ public class Scoreboard : BaseEntity
     public int PageId { get; set; }
     public int UserId { get; set; }
     public int Score { get; set; }
+
+    public virtual Event Event { get; set; }
+    public virtual Page Page { get; set; }
+    public virtual User User { get; set; }
+
+
+
 }

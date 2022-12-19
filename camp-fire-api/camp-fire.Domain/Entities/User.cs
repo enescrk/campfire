@@ -5,11 +5,11 @@ namespace camp_fire.Domain.Entities;
 
 public class User : BaseEntity
 {
-    public User()
-    {
-        UserConfirmations = new List<UserConfirmation>();
-        Events = new List<Event>();
-    }
+    // public User()
+    // {
+    //     UserConfirmations = new List<UserConfirmation>();
+    //     Events = new List<Event>();
+    // }
 
     public string? Name { get; set; }
     public string? Surname { get; set; }
@@ -22,5 +22,5 @@ public class User : BaseEntity
 
     public virtual ICollection<Event>? Events { get; set; }
     public virtual ICollection<UserConfirmation>? UserConfirmations { get; set; }
-    public virtual Address? Addresses { get; set; }
+    public virtual Address? Address { get; set; }
 }

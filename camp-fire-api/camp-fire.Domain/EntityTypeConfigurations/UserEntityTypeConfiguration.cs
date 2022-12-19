@@ -11,5 +11,8 @@ public class UserEntityTypeConfiguration : BaseEntityTypeConfiguration<User>
         builder.Property(x => x.Surname).HasMaxLength(50).IsRequired();
         builder.Property(x => x.EMail).HasMaxLength(50).IsRequired();
         builder.Property(x => x.PhoneNumber).HasMaxLength(15);
+        builder.HasOne(x => x.Address)
+               .WithOne(y => y.User)
+               .HasForeignKey<Address>(z => z.UserId);
     }
 }

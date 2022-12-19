@@ -7,7 +7,7 @@ namespace camp_fire.Domain.EntityTypeConfigurations
     {
         public override void Configure(EntityTypeBuilder<Address> builder)
         {
-            builder.Property(x => x.Country).IsRequired();
+            builder.Property(x => x.CountryId).IsRequired();
             builder.Property(x => x.City).HasMaxLength(100).IsRequired();
             builder.Property(x => x.OpenAddress).HasMaxLength(500).IsRequired();
         }

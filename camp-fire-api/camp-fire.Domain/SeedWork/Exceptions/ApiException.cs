@@ -1,19 +1,15 @@
-using System;
-using System.Collections.Generic;
+namespace camp_fire.Domain.SeedWork.Exceptions;
 
-namespace HilfeOhneGrenzen.Domain.SeedWork.Exceptions
+public class ApiException : Exception
 {
-    public class ApiException : Exception
+    public ApiException(string message) : base(message)
     {
-        public ApiException(string message) : base(message)
-        {
 
-        }
+    }
 
-        public ApiException(List<string> messages)
-        : base(string.Join(" | ", messages))
-        {
+    public ApiException(List<string> messages)
+    : base(string.Join(" | ", messages))
+    {
 
-        }
     }
 }

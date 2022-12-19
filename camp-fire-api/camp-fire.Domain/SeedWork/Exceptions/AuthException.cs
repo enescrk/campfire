@@ -1,19 +1,18 @@
 using System;
 using System.Collections.Generic;
 
-namespace HilfeOhneGrenzen.Domain.SeedWork.Exceptions
+namespace camp_fire.Domain.SeedWork.Exceptions;
+
+public class AuthException : Exception
 {
-    public class AuthException : Exception
+    public AuthException(string message) : base(message)
     {
-        public AuthException(string message) : base(message)
-        {
 
-        }
+    }
 
-        public AuthException(List<string> messages)
-        : base(string.Join(" | ", messages))
-        {
+    public AuthException(List<string> messages)
+    : base(string.Join(" | ", messages))
+    {
 
-        }
     }
 }

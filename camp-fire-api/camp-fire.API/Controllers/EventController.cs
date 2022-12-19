@@ -1,33 +1,56 @@
-using camp_fire.API.Hubs;
+using camp_fire.API.Configurations;
+using camp_fire.Application.IServices;
+using camp_fire.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 
 namespace camp_fire.API.Controllers;
 
-[ApiController]
 [Route("[controller]")]
-public class EventController : ControllerBase
+public class EventController : BaseApiController
 {
     private readonly ILogger<EventController> _logger;
-    private readonly IHubContext<EventHub> _hub;
+    private readonly IEventService _eventService;
 
     public EventController(ILogger<EventController> logger,
-                            IHubContext<EventHub> hub)
+                            IEventService eventService
+                            ) : base(logger)
     {
         _logger = logger;
-        _hub = hub;
+        _eventService = eventService;
     }
 
-    [HttpGet]
-    public async Task<IActionResult> Get()
+    [HttpGet("{id}")]
+    [AllowAnonymous]
+    public async Task<IActionResult> Get(int id)
     {
-        await _hub.Clients.All.SendAsync("hubData", Foo());
+        var result = await _eventService.GetAsync(id);
+        return Ok(new BaseApiResult { Data = result });
+    }
+
+    [HttpPost]
+    [AllowAnonymous]
+    public async Task<IActionResult> Post([FromBody] Event request)
+    {
+        var result = await _eventService.CreateAsync(request);
+        return Ok(result);
+    }
+
+    [HttpPut]
+    [AllowAnonymous]
+    public async Task<IActionResult> Put([FromBody] Event request)
+    {
+        var result = await _eventService.UpdateAsync(request);
+
+        return Ok(result);
+    }
+
+    [HttpGet("test")]
+    [AllowAnonymous]
+    public async Task<IActionResult> Get([FromBody] Event request)
+    {
+        // var result = await _eventService.UpdateAsync(request);
 
         return Ok();
-    }
-
-    private string Foo()
-    {
-        return "test";
     }
 }

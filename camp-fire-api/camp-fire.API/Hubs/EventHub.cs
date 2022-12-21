@@ -18,10 +18,10 @@ public class EventHub : Hub
         await Clients.All.SendAsync("ReceiveMessage", message);
     }
 
-    public async Task GetEvent(int id)
+    public async Task SendEvent(string id)
     {
-        var eventt = await _unitOfWork.GetRepository<Event>().GetByIdAsync(id);
+        var eventt = await _unitOfWork.GetRepository<Event>().GetByIdAsync(Convert.ToInt32(id));
 
-        await Clients.All.SendAsync("GetEvent", eventt);
+        await Clients.All.SendAsync("GetEvent", eventt.Name);
     }
 }

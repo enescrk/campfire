@@ -30,7 +30,7 @@ public class EventService : IEventService
             throw new ApiException("Event couldn't find");
 
         eventt.Name = request.Name;
-        eventt.User.Name = request.User.Name;
+        eventt.User.Name = request?.User?.Name;
 
         _unitOfWork.GetRepository<Event>().Update(eventt);
 

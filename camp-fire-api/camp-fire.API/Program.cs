@@ -25,7 +25,10 @@ builder.Services.AddControllersWithViews()
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSignalR();
+builder.Services.AddSignalR(e =>
+{
+    e.MaximumReceiveMessageSize = 102400000;
+});
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
                             policy.AllowAnyMethod()
                                   .AllowAnyHeader()

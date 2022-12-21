@@ -1,0 +1,14 @@
+.circle {
+    width: 100px;
+    height: 100px;
+    display: inline-block;
+    padding-top: 30px;
+}
+.text {
+    font-size: 10px;
+    max-width: 70px;
+}
+.statusIcon {
+    position: relative;
+    top: 20px;
+}

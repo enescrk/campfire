@@ -1,0 +1,17 @@
+.storyBox {
+    background-color: #c4bdbd;
+    height: 50vh;
+    text-align: left;
+    font-family: Maitree, sans-serif;
+    color: #525050;
+position: relative;
+}
+.storyInput {
+    background-color: white;
+    position: absolute;
+    bottom: 0;
+}
+.addedSentence:hover {
+    background-color: #c7b98f;
+    cursor: pointer;
+}

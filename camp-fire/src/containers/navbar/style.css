@@ -1,0 +1,27 @@
+.navbar {
+    background-color: #572001;
+}
+.bearTalk {
+    background-color: white;
+    display: inline-block;
+    font-size: 14px;
+}
+.triangle {
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right:10px solid white;
+    display: inline-block;
+}
+
+.comment {
+    display: inline-block;
+    animation-name: example;
+    animation-duration: 3s;
+}
+
+@keyframes example {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}

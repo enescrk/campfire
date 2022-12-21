@@ -1,0 +1,17 @@
+@import "../../assets/theme/colors.css";
+.xs {
+    padding: 10px;
+}
+
+.s {
+    padding: 12px;
+}
+.general {
+    border-radius: 10px;
+    border: none;
+    float: right;
+}
+
+.general:hover {
+    opacity: 0.7;
+}

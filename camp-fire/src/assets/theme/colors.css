@@ -1,0 +1,39 @@
+.p1 {
+    background-color: #000000;
+    color: white;
+}
+.p2 {
+    background-color: #A44512;
+    color: white;
+}
+.p3 {
+    background-color: #FF7E38;
+    color: white;
+}
+.p4 {
+    background-color: #065406;
+    color: white;
+}
+.p4:hover {
+    background-color: #065406;
+    color: white;
+    opacity: 0.8;
+}
+.p5 {
+    background-color: #7a1414;
+    color: white;
+}
+.p5:hover {
+    background-color: #7a1414;
+    color: white;
+    opacity: 0.8;
+}
+.disabled {
+    background-color: grey;
+}
+.btn{
+    border: none;
+}
+.btn:hover {
+    opacity: 0.9;
+}

@@ -27,7 +27,7 @@ public class EventService : IEventService
         var eventt = await _unitOfWork.GetRepository<Event>().GetByIdAsync(request.Id);
 
         if (eventt is null)
-            throw new ApiException("Event couldn't find");
+            throw new ApiException("Event couldn't find");      
 
         eventt.Name = request.Name;
         eventt.User.Name = request?.User?.Name;

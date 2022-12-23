@@ -16,6 +16,7 @@ builder.Services.AddSingleton(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddTransient<ICampFireDBContext, CampFireDBContext>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<IEventService, EventService>();
+// builder.Services.AddTransient<EventHub>();
 
 builder.Services.AddEntityFrameworkNpgsql().AddDbContext<CampFireDBContext>((optionBuilder) =>
 optionBuilder.UseNpgsql(builder.Configuration.GetConnectionString(nameof(CampFireDBContext))));

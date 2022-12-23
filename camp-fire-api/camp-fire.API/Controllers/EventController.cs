@@ -1,8 +1,10 @@
 using camp_fire.API.Configurations;
+using camp_fire.API.Hubs;
 using camp_fire.Application.IServices;
 using camp_fire.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace camp_fire.API.Controllers;
 
@@ -11,13 +13,16 @@ public class EventController : BaseApiController
 {
     private readonly ILogger<EventController> _logger;
     private readonly IEventService _eventService;
+    private readonly IHubContext<EventHub> _eventHub;
 
     public EventController(ILogger<EventController> logger,
-                            IEventService eventService
+                            IEventService eventService,
+                            IHubContext<EventHub> eventHub
                             ) : base(logger)
     {
         _logger = logger;
         _eventService = eventService;
+        _eventHub = eventHub;
     }
 
     [HttpGet("{id}")]
@@ -42,6 +47,7 @@ public class EventController : BaseApiController
     {
         var result = await _eventService.UpdateAsync(request);
 
+        await _eventHub.Clients.All.SendAsync("GetEvent", result.Name);
         return Ok(result);
     }
 

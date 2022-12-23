@@ -31,7 +31,7 @@ function App() {
             // sendMsg()
             hubConnection.on("GetEvent", (data) => {
                 console.log("EVENTDATASI HABURADAADIR =>" + data)
-                setName((prevState) => prevState = data)
+                setName(data)
             })
         }
     }, [hubConnection])

@@ -22,15 +22,20 @@ public class EventService : IEventService
         return await _unitOfWork.SaveChangesAsync();
     }
 
-    public async Task<Event> UpdateAsync(Event request)
+    public async Task<EventResponseVM> UpdateAsync(UpdateEventRequestVM request)
     {
         var eventt = await _unitOfWork.GetRepository<Event>().GetByIdAsync(request.Id);
 
         if (eventt is null)
-            throw new ApiException("Event couldn't find");      
+            throw new ApiException("Event couldn't find");
 
         eventt.Name = request.Name;
-        eventt.User.Name = request?.User?.Name;
+        eventt.Date = request.Date;
+        eventt.HashedKey = request.HashedKey;
+        eventt.MeetingUrl = request.MeetingUrl;
+        eventt.ParticipiantIds = request.ParticipiantIds;
+        eventt.PageIds = request.PageIds;
+        eventt.CompanyId = request.CompanyId;
 
         _unitOfWork.GetRepository<Event>().Update(eventt);
 
@@ -38,7 +43,9 @@ public class EventService : IEventService
 
         var newEvent = await _unitOfWork.GetRepository<Event>().GetByIdAsync(request.Id);
 
-        return newEvent;
+        var mappedEvent = MapEventResposeVMHelper(newEvent);
+
+        return mappedEvent;
     }
 
     public async Task<EventResponseVM?> GetAsync(int id)
@@ -48,13 +55,60 @@ public class EventService : IEventService
         var result = new EventResponseVM
         {
             Id = eventt.Id,
-            HashedKey = eventt!.HashedKey!,
-            Name = eventt!.Name!,
-            UserName = eventt?.User,
-            Pages = eventt.Pages?.ToList(),
-            Scoreboards = eventt.Scoreboards?.ToList()
+            HashedKey = eventt.HashedKey,
+            Name = eventt.Name,
+            Date = eventt.Date,
+            User = new UserResponseVM
+            {
+                Id = eventt.UserId,
+                Name = eventt.User?.Name,
+                Surname = eventt.User?.Surname
+            },
+            ParticipiantIds = eventt.ParticipiantIds?.ToList(),
+            PageIds = eventt.Pages?.Select(x => x.Id).ToList(),
+            Scoreboards = eventt.Scoreboards?.Select(x => new ScoreboardResponseVM
+            {
+                Id = x.Id,
+                EventId = x.EventId,
+                PageId = x.PageId,
+                UserId = x.UserId,
+                Score = x.Score
+            }).ToList()
         };
 
         return await Task.FromResult(result);
     }
+
+
+    #region Helpers 
+
+    private EventResponseVM MapEventResposeVMHelper(Event eventt)
+    {
+        var eventResponseVM = new EventResponseVM
+        {
+            Id = eventt.Id,
+            Name = eventt.Name,
+            Date = eventt.Date,
+            HashedKey = eventt.HashedKey,
+            PageIds = eventt.Pages.Select(x => x.Id).ToList(),
+            User = new UserResponseVM
+            {
+                Id = eventt.UserId,
+                Name = eventt.User?.Name,
+                Surname = eventt.User?.Surname
+            },
+            Scoreboards = eventt.Scoreboards?.Select(x => new ScoreboardResponseVM
+            {
+                Id = x.Id,
+                EventId = x.EventId,
+                PageId = x.PageId,
+                UserId = x.UserId,
+                Score = x.Score
+            }).ToList()
+        };
+
+        return eventResponseVM;
+    }
+
+    #endregion
 }

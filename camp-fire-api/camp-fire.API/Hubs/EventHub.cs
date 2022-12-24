@@ -1,4 +1,5 @@
 // using camp_fire.API.IHubs;
+using camp_fire.API.Models;
 using camp_fire.Domain.Entities;
 using camp_fire.Domain.SeedWork;
 using Microsoft.AspNetCore.SignalR;
@@ -19,7 +20,7 @@ public class EventHub : Hub
         await Clients.All.SendAsync("ReceiveMessage", message);
     }
 
-    public async Task SendEvent(string eventt)
+    public async Task SendEvent(EventHubResponseVM eventt)
     {
         await Clients.All.SendAsync("GetEvent", eventt);
     }

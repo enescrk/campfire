@@ -1,6 +1,8 @@
 using camp_fire.API.Configurations;
 using camp_fire.API.Hubs;
+using camp_fire.API.Models;
 using camp_fire.Application.IServices;
+using camp_fire.Application.Models;
 using camp_fire.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -43,11 +45,14 @@ public class EventController : BaseApiController
 
     [HttpPut]
     [AllowAnonymous]
-    public async Task<IActionResult> Put([FromBody] Event request)
+    public async Task<IActionResult> Put([FromBody] UpdateEventRequestVM request)
     {
         var result = await _eventService.UpdateAsync(request);
 
-        await _eventHub.Clients.All.SendAsync("GetEvent", result.Name);
+        var eventHubModel = MapEventHubModelHelper(result);
+
+        await _eventHub.Clients.All.SendAsync("GetEvent", eventHubModel);
+
         return Ok(result);
     }
 
@@ -59,4 +64,31 @@ public class EventController : BaseApiController
 
         return Ok();
     }
+
+    #region Helpers
+
+    private EventHubResponseVM MapEventHubModelHelper(EventResponseVM eventt)
+    {
+        var eventHubModel = new EventHubResponseVM
+        {
+            Id = eventt.Id,
+            CurrentPageId = 0, //* TODO: Tabloya eklenip dinamikleştirilecek.
+            Date = eventt.Date,
+            Name = eventt.Name,
+            PageIds = eventt.PageIds,
+            ParticipiantIds = eventt.ParticipiantIds,
+            Scoreboards = eventt.Scoreboards?.Select(x => new ScoreboardResponseVM
+            {
+                Id = x.Id,
+                EventId = x.EventId,
+                PageId = x.PageId,
+                UserId = x.UserId,
+                Score = x.Score
+            }).ToList()
+        };
+
+        return eventHubModel;
+    }
+
+    #endregion
 }

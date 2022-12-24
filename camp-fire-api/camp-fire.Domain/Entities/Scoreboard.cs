@@ -12,7 +12,4 @@ public class Scoreboard : BaseEntity
     public virtual Event Event { get; set; }
     public virtual Page Page { get; set; }
     public virtual User User { get; set; }
-
-
-
 }

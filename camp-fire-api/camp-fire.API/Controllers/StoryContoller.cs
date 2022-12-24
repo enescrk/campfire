@@ -13,7 +13,7 @@ public class StoryController : BaseApiController
     private readonly IStoryService _storyService;
 
     public StoryController(ILogger<StoryController> logger,
-                            IStoryService eventService
+                            IStoryService storyService
                             ) : base(logger)
     {
         _logger = logger;

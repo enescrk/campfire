@@ -44,13 +44,4 @@ public class CountryController : BaseApiController
 
         return Ok(result);
     }
-
-    [HttpGet("test")]
-    [AllowAnonymous]
-    public async Task<IActionResult> Get([FromBody] Country request)
-    {
-        // var result = await _eventService.UpdateAsync(request);
-
-        return Ok();
-    }
 }

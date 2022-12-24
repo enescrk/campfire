@@ -30,7 +30,6 @@ public class PageService : IPageService
             throw new ApiException("Event couldn't find");
 
         pagee.Name = request.Name;
-        pagee.User.Name = request?.User?.Name;
 
         _unitOfWork.GetRepository<Page>().Update(pagee);
 

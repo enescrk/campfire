@@ -11,7 +11,7 @@ public class Story : BaseEntity
 
 */
 using camp_fire.Domain.Entities;
-
+using camp_fire.Domain.Enums;
 namespace camp_fire.Application.Models;
 
 public class StoryResponseVM

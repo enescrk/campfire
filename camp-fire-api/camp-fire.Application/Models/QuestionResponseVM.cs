@@ -10,10 +10,11 @@ public class Question : BaseEntity
 }
 */
 using camp_fire.Domain.Entities;
+using camp_fire.Domain.Enums;
 
 namespace camp_fire.Application.Models;
 
-public class EventResponseVM
+public class QuestionResponseVM
 {
     public string Text { get; set; }
     public QuestionType Type { get; set; }

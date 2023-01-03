@@ -79,7 +79,6 @@ public class EventService : IEventService
         return await Task.FromResult(result);
     }
 
-
     #region Helpers 
 
     private EventResponseVM MapEventResposeVMHelper(Event eventt)

@@ -1,7 +1,5 @@
 // using camp_fire.API.IHubs;
 using camp_fire.API.Models;
-using camp_fire.Domain.Entities;
-using camp_fire.Domain.SeedWork;
 using Microsoft.AspNetCore.SignalR;
 
 namespace camp_fire.API.Hubs;

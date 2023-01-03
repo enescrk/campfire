@@ -5,7 +5,7 @@ import * as signalR from "@microsoft/signalr";
 
 function App() {
     const [text, setText] = useState("");
-    const [name, setName] = useState("");
+    const [data, setName] = useState(Object);
     const [msgList, setMsgList] = useState(null)
     const [hubConnection, setHubConnection] = useState()
     useEffect(() => {
@@ -23,7 +23,25 @@ function App() {
     }
     const sendMsg = () => {
         if (hubConnection) {
-            hubConnection.invoke("SendEvent", "3").then((res) => { })
+            hubConnection.invoke("SendEvent", {
+                "id": 3,
+                "name": "123132",
+                "hashedKey": "testHash",
+                "date": "2022-12-19T19:20:36.472772Z",
+                "user": {
+                    "id": 1,
+                    "name": "test",
+                    "surname": "kılıç",
+                    "authorizedCompanies": null,
+                    "gender": false,
+                    "eMail": null,
+                    "userType": 0,
+                    "phoneNumber": null
+                },
+                "scoreboards": [],
+                "pageIds": [],
+                "participiantIds": null
+            }).then((res) => { })
         }
     }
     useEffect(() => {
@@ -44,7 +62,7 @@ function App() {
             <div>
                 <h2>Mesajlar</h2>
                 <ul>
-                    {name}
+                    {data.name}
                 </ul>
             </div>
         </div>

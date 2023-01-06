@@ -16,15 +16,18 @@ public class EventController : BaseApiController
     private readonly ILogger<EventController> _logger;
     private readonly IEventService _eventService;
     private readonly IHubContext<EventHub> _eventHub;
+    private readonly IUserService _userService;
 
     public EventController(ILogger<EventController> logger,
                             IEventService eventService,
-                            IHubContext<EventHub> eventHub
+                            IHubContext<EventHub> eventHub,
+                            IUserService userService
                             ) : base(logger)
     {
         _logger = logger;
         _eventService = eventService;
         _eventHub = eventHub;
+        _userService = userService;
     }
 
     [HttpGet("{id}")]
@@ -51,6 +54,8 @@ public class EventController : BaseApiController
 
         var eventHubModel = MapEventHubModelHelper(result);
 
+        eventHubModel.ParticipiantUsers = await _userService.GetAsync(new GetUserRequestVM { Ids = eventHubModel.ParticipiantIds });
+
         await _eventHub.Clients.All.SendAsync("GetEvent", eventHubModel);
 
         return Ok(result);
@@ -58,10 +63,8 @@ public class EventController : BaseApiController
 
     [HttpGet("test")]
     [AllowAnonymous]
-    public async Task<IActionResult> Get([FromBody] Event request)
+    public async Task<IActionResult> Get()
     {
-        // var result = await _eventService.UpdateAsync(request);
-
         return Ok();
     }
 

@@ -10,5 +10,6 @@ public class EventHubResponseVM
     public List<int>? PageIds { get; set; }
     public int CurrentPageId { get; set; }
     public List<int>? ParticipiantIds { get; set; }
+    public List<UserResponseVM>? ParticipiantUsers { get; set; }
     public List<ScoreboardResponseVM>? Scoreboards { get; set; }
 }

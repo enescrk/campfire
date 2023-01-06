@@ -1,5 +1,6 @@
 using camp_fire.API.Configurations;
 using camp_fire.Application.IServices;
+using camp_fire.Application.Models;
 using camp_fire.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,17 +21,17 @@ public class QuestionController : BaseApiController
         _questionService = questionService;
     }
 
-    [HttpGet("{id}")]
+     [HttpGet("{id}")]
     [AllowAnonymous]
     public async Task<IActionResult> Get(int id)
     {
-        var result = await _questionService.GetAsync(id);
+        var result = await _questionService.GetByIdAsync(id);
         return Ok(new BaseApiResult { Data = result });
     }
 
     [HttpPost]
     [AllowAnonymous]
-    public async Task<IActionResult> Post([FromBody] Question request)
+    public async Task<IActionResult> Post([FromBody] CreateQuestionRequestVM request)
     {
         var result = await _questionService.CreateAsync(request);
         return Ok(result);
@@ -39,15 +40,6 @@ public class QuestionController : BaseApiController
     [HttpPut]
     [AllowAnonymous]
     public async Task<IActionResult> Put([FromBody] Question request)
-    {
-        var result = await _questionService.UpdateAsync(request);
-
-        return Ok(result);
-    }
-
-    [HttpGet("test")]
-    [AllowAnonymous]
-    public async Task<IActionResult> Get([FromBody] Question request)
     {
         // var result = await _eventService.UpdateAsync(request);
 

@@ -5,7 +5,7 @@ namespace camp_fire.Application.IServices;
 
 public interface IStoryService
 {
-    Task<int> CreateAsync(Story request);
-    Task<Story> UpdateAsync(Story request);
-    Task<StoryResponseVM?> GetAsync(int id);
+    Task<int> CreateAsync(CreateStoryRequestVM request);
+    Task<StoryResponseVM> UpdateAsync(UpdateStoryRequestVM request);
+    Task<StoryResponseVM?> GetByIdAsync(int id);
 }

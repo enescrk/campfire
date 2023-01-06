@@ -79,6 +79,15 @@ public class EventService : IEventService
         return await Task.FromResult(result);
     }
 
+    public async Task DeleteAsync(int id) 
+    {
+        var eventt = await _unitOfWork.GetRepository<Event>().GetByIdAsync(id);
+
+        if (eventt is null)
+            throw new ApiException("event couldn't find");
+
+        _unitOfWork.GetRepository<Event>().Delete(eventt);
+    }
     #region Helpers 
 
     private EventResponseVM MapEventResposeVMHelper(Event eventt)

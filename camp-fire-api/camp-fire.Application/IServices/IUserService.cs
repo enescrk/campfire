@@ -5,7 +5,7 @@ namespace camp_fire.Application.IServices;
 
 public interface IUserService
 {
-    Task<int> CreateAsync(User request);
-    Task<User> UpdateAsync(User request);
-    Task<UserResponseVM?> GetAsync(int id);
+    Task<int> CreateAsync(CreateUserRequestVM request);
+    Task<UserResponseVM> UpdateAsync(UpdateUserRequestVM request);
+    Task<UserResponseVM?> GetByIdAsync(int id);
 }

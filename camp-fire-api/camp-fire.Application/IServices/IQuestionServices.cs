@@ -5,7 +5,8 @@ namespace camp_fire.Application.IServices;
 
 public interface IQuestionService
 {
-    Task<int> CreateAsync(Question request);
-    Task<Event> UpdateAsync(Question request);
-    Task<QuestionResponseVM?> GetAsync(int id);
+    Task<int> CreateAsync(CreateQuestionRequestVM request);
+    Task<QuestionResponseVM> UpdateAsync(UpdateQuestionRequestVM request);
+    Task<QuestionResponseVM?> GetByIdAsync(int id);
 }
+

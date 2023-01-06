@@ -6,6 +6,7 @@ public class Page : BaseEntity
 {
     public string? Name { get; set; }
     public int EventId { get; set; }
+    public int ScoreboardId { get; set; }
 
     public virtual Event? Event { get; set; }
     public virtual Scoreboard? Scoreboard { get; set; }

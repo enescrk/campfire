@@ -7,5 +7,6 @@ public interface IPageService
 {
     Task<int> CreateAsync(Page request);
     Task<Page> UpdateAsync(Page request);
-    Task<PageResponseVM?> GetAsync(int id);
+    Task<List<PageResponseVM>> GetAsync(GetPagesRequestVM request);
+    Task<PageResponseVM?> GetByIdAsync(int id);
 }

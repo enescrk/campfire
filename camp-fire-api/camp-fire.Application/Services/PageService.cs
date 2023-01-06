@@ -24,14 +24,14 @@ public class PageService : IPageService
 
     public async Task<Page> UpdateAsync(Page request)
     {
-        var pagee= await _unitOfWork.GetRepository<Page>().GetByIdAsync(request.Id);
+        var page = await _unitOfWork.GetRepository<Page>().GetByIdAsync(request.Id);
 
-        if (pagee is null)
+        if (page is null)
             throw new ApiException("Event couldn't find");
 
-        pagee.Name = request.Name;
+        page.Name = request.Name;
 
-        _unitOfWork.GetRepository<Page>().Update(pagee);
+        _unitOfWork.GetRepository<Page>().Update(page);
 
         await _unitOfWork.SaveChangesAsync();
 
@@ -40,16 +40,49 @@ public class PageService : IPageService
         return newPage;
     }
 
-    public async Task<PageResponseVM?> GetAsync(int id)
+     public async Task DeleteAsync(int id)
     {
-        var pagee = _unitOfWork.GetRepository<Page>().FindOne(x => x.Id == id);
+        var page = await _unitOfWork.GetRepository<Page>().GetByIdAsync(id);
+
+        if (page is null)
+            throw new ApiException("page couldn't find");
+
+        _unitOfWork.GetRepository<Page>().Delete(page);
+    }
+
+    public async Task<List<PageResponseVM>> GetAsync(GetPagesRequestVM request)
+    {
+        var pages = _unitOfWork.GetRepository<Page>().Find(x =>
+        request.Id == null || x.Id == request.Id
+        && (request.EventId == null || x.EventId == request.EventId)
+        && (string.IsNullOrEmpty(request.Name) || x.Name!.ToLower() == request.Name.ToLower().Trim())
+        && (request.ScoreboardId == null || x.ScoreboardId == request.ScoreboardId))
+        .Select(x => new PageResponseVM
+        {
+            Id = x.Id,
+            Name = x!.Name!,
+            EventId = x.EventId,
+            EventName = x.Event!.Name,
+            ScoreboardId = x.Scoreboard!.Id
+        }).ToList();
+
+        return await Task.FromResult(pages);
+    }
+
+    public async Task<PageResponseVM?> GetByIdAsync(int id)
+    {
+        var page = _unitOfWork.GetRepository<Page>().FindOne(x => x.Id == id);
+
+        if (page is null)
+            throw new ApiException("page couldn't find ");
 
         var result = new PageResponseVM
         {
-            Name = pagee!.Name!,
-            EventId=pagee.EventId,
-            Event = pagee?.Event,
-            Scoreboard = pagee?.Scoreboard
+            Id = page.Id,
+            Name = page!.Name!,
+            EventId = page.EventId,
+            EventName = page.Event?.Name,
+            ScoreboardId = page.Scoreboard?.Id
         };
 
         return await Task.FromResult(result);

@@ -45,6 +45,16 @@ public class ScoreboardService : IScoreboardService
         return mappedScoreboard;
     }
 
+     public async Task DeleteAsync(int id)
+    {
+        var scoreboard = await _unitOfWork.GetRepository<Scoreboard>().GetByIdAsync(id);
+
+        if (scoreboard is null)
+            throw new ApiException("Scoreboard couldn't find");
+
+        _unitOfWork.GetRepository<Scoreboard>().Delete(scoreboard);
+    }
+
     #region Helpers
 
     private ScoreboardResponseVM MapScoreboardResponseVMHelper(Scoreboard scoreboard)

@@ -24,7 +24,7 @@ public class PageController : BaseApiController
     [AllowAnonymous]
     public async Task<IActionResult> Get(int id)
     {
-        var result = await _pageService.GetAsync(id);
+        var result = await _pageService.GetByIdAsync(id);
         return Ok(new BaseApiResult { Data = result });
     }
 
@@ -43,14 +43,5 @@ public class PageController : BaseApiController
         var result = await _pageService.UpdateAsync(request);
 
         return Ok(result);
-    }
-
-    [HttpGet("test")]
-    [AllowAnonymous]
-    public async Task<IActionResult> Get([FromBody] Page request)
-    {
-        // var result = await _eventService.UpdateAsync(request);
-
-        return Ok();
     }
 }

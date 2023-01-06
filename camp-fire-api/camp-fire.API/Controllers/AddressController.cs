@@ -1,32 +1,48 @@
+using camp_fire.API.Configurations;
+using camp_fire.Application.IServices;
+using camp_fire.Application.Models;
+using camp_fire.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace camp_fire.API.Controllers;
 
-[ApiController]
 [Route("[controller]")]
-public class AddressController : ControllerBase
+public class AddressController : BaseApiController
 {
-    private static readonly string[] Summaries = new[]
-    {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
-
     private readonly ILogger<AddressController> _logger;
+    private readonly IAddressService _addressService;
 
-    public AddressController(ILogger<AddressController> logger)
+    public AddressController(ILogger<AddressController> logger,
+                            IAddressService addressService
+                            ) : base(logger)
     {
         _logger = logger;
+        _addressService = addressService;
     }
 
-    [HttpGet]
-    public IEnumerable<object> Get()
+     [HttpGet("{id}")]
+    [AllowAnonymous]
+    public async Task<IActionResult> Get(int id)
     {
-        return Enumerable.Range(1, 5).Select(index => new
-        {
-            Date = DateTime.Now.AddDays(index),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-        })
-        .ToArray();
+        var result = await _addressService.GetByIdAsync(id);
+        return Ok(new BaseApiResult { Data = result });
+    }
+
+    [HttpPost]
+    [AllowAnonymous]
+    public async Task<IActionResult> Post([FromBody] CreateAddressRequestVM request)
+    {
+        var result = await _addressService.CreateAsync(request);
+        return Ok(result);
+    }
+
+    [HttpPut]
+    [AllowAnonymous]
+    public async Task<IActionResult> Put([FromBody] Address request)
+    {
+        // var result = await _eventService.UpdateAsync(request);
+
+        return Ok();
     }
 }

@@ -12,8 +12,18 @@ namespace camp_fire.Application.Models;
 
 public class PageResponseVM
 {
-    public int EventId { get; set; }
-    public string Name { get; set; }
-    public Scoreboard Scoreboard { get; set; }
-    public Event Event { get; set; }
+    public int Id { get; set; }
+    public int? EventId { get; set; }
+    public string? Name { get; set; }
+    public string? EventName { get; set; }
+    public int? ScoreboardId { get; set; }
+}
+
+public class GetPagesRequestVM
+{
+    public int? Id { get; set; }
+    public int? EventId { get; set; }
+    public string? Name { get; set; }
+    public string? EventName { get; set; }
+    public int? ScoreboardId { get; set; }
 }

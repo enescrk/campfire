@@ -16,8 +16,10 @@ builder.Services.AddSingleton(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddTransient<ICampFireDBContext, CampFireDBContext>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<IEventService, EventService>();
+builder.Services.AddTransient<IUserService, UserService>();
 // builder.Services.AddTransient<EventHub>();
 
+var foo = builder.Configuration.GetConnectionString(nameof(CampFireDBContext));
 builder.Services.AddEntityFrameworkNpgsql().AddDbContext<CampFireDBContext>((optionBuilder) =>
 optionBuilder.UseNpgsql(builder.Configuration.GetConnectionString(nameof(CampFireDBContext))));
 
@@ -40,11 +42,11 @@ var app = builder.Build();
 
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+// if (app.Environment.IsDevelopment())
+// {
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+// }
 
 app.UseCors();
 

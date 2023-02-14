@@ -7,16 +7,13 @@ import fire from "../../assets/icons/fire.svg";
 import moon from "../../assets/gifs/moon.gif";
 import CustomBtn from "../../components/customBtn";
 import {useHistory} from "react-router-dom";
-import {useContext, UserContext} from "../../utils/contextApi/userContext";
+import {useContext, EventContext} from "../../utils/contextApi/eventContext";
 const WaitingRoom = () => {
-    const {users, setUsers} = useContext(UserContext);
+    const {event, setEvent} = useContext(EventContext);
     const history = useHistory();
     const openMeetingTab = () => {
-        window.open("https://meet.google.com/dno-hjhm-kdx", "_blank");
+        window.open(`https://meet.google.com/${event.hashedKey}`, "_blank");
         history.push("/truthordare");
-        let tempUsers = users;
-        tempUsers.map((person) => person.onWaitingPage = false);
-        setUsers(tempUsers);
     }
 
     return (<div>

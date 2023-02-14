@@ -7,7 +7,7 @@ import "../../components/style.css";
 import * as truthQuestionList from "../../utils/truthQuestions.json";
 import * as dareQuestionList from "../../utils/dareQuestions.json";
 import Counter from "../../components/counter";
-import {useContext, UserContext} from "../../utils/contextApi/userContext";
+import {useContext, EventContext} from "../../utils/contextApi/eventContext";
 const TruthOrDare = () => {
     const [question, setQuestion] = useState("Söylediğiniz en son yalan nedir ?");
     const [effectedQuestion, setEffectedQuestion] = useState("");
@@ -17,7 +17,7 @@ const TruthOrDare = () => {
     const [answer, setAnswer] = useState(null);
     const truthQuestions = truthQuestionList.default;
     const dareQuestions = dareQuestionList.default;
-    const {users, setUsers} = useContext(UserContext);
+    const {event, setEvent} = useContext(EventContext);
 
     const typingEffect = () => {
         if (question) {
@@ -28,12 +28,6 @@ const TruthOrDare = () => {
             }
         }
     }
-
-    useEffect(() => {
-        let tempUser = users;
-        tempUser[1].isTurn = true;
-        setUsers(tempUser);
-    },[])
 
     useEffect(() => {
         if (answer === truthOrDare.Truth) {

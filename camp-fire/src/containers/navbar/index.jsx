@@ -14,7 +14,8 @@ const Navbar = () => {
         {path: "story", text: "Korku hikayesi bir kamp geleneğidir. Takıldığınız yerde size yardımcı olacağım."}
     ];
     setInterval(() => {
-        setBearText(pageText.filter((page) => window.location.pathname.includes(page.path))[0].text);
+        if (window.location.pathname !== '/')
+            setBearText(pageText.filter((page) => window.location.pathname.includes(page.path))[0].text);
     }, 2000)
 
 

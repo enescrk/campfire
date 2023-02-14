@@ -3,14 +3,15 @@ import "./style.css";
 import coolHand from "../../assets/icons/coolHand.svg";
 import waiting from "../../assets/icons/waiting.svg";
 import ReactTooltip from 'react-tooltip';
-import {useContext, UserContext} from "../../utils/contextApi/userContext";
+import {useContext, EventContext} from "../../utils/contextApi/eventContext";
 
 const UserLine = () => {
-    const {users} = useContext(UserContext);
+    const {event, setEvent} = useContext(EventContext);
+    console.log(event);
     return (<div>
             <ReactTooltip effect={'float'}/>
-            {users.map((person) => (
-                <div className="rounded-circle bg-light shadow circle mx-2" style={{border: person.isTurn ? '2px solid red' : 'none'}}>
+            {event?.users?.map((person) => (
+                <div className="rounded-circle bg-light shadow circle mx-2" style={{border: person.isActive ? '2px solid red' : 'none'}}>
                 <span className="text">
                     <b>
                         {person.name}
@@ -18,7 +19,7 @@ const UserLine = () => {
                 </span>
                     <div className={'statusIcon'}>
                         {
-                            person.onWaitingPage && (
+                            person.isLogedin && (
                                 <img data-tip={person.isReady ? `${person.name} burada` : `${person.name} henüz katılmadı`}
                                      src={person.isReady ? coolHand : waiting} alt="" width={'40px'}/>
                             )

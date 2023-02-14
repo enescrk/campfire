@@ -1,8 +1,8 @@
 import {createContext, useContext} from "react";
 
-const UserContext = createContext();
+const EventContext = createContext();
 
 export {
-    UserContext,
+    EventContext,
     useContext
 }

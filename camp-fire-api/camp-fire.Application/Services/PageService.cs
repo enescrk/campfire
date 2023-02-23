@@ -30,6 +30,7 @@ public class PageService : IPageService
             throw new ApiException("Event couldn't find");
 
         page.Name = request.Name;
+        page.IsCompleted = request.IsCompleted;
 
         _unitOfWork.GetRepository<Page>().Update(page);
 
@@ -40,7 +41,7 @@ public class PageService : IPageService
         return newPage;
     }
 
-     public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(int id)
     {
         var page = await _unitOfWork.GetRepository<Page>().GetByIdAsync(id);
 
@@ -82,7 +83,8 @@ public class PageService : IPageService
             Name = page!.Name!,
             EventId = page.EventId,
             EventName = page.Event?.Name,
-            ScoreboardId = page.Scoreboard?.Id
+            ScoreboardId = page.Scoreboard?.Id,
+            IsCompleted = page.IsCompleted
         };
 
         return await Task.FromResult(result);

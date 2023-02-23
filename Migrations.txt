@@ -1,5 +1,5 @@
 # Add Migration
-dotnet ef migrations add -s camp-fire.API -p camp-fire.Domain initial <Desciprion>
+dotnet ef migrations add -s camp-fire.API -p camp-fire.Domain  <Desciprion>
 
 # Update Databse
 dotnet ef database update -s camp-fire.API -p camp-fire.Domain

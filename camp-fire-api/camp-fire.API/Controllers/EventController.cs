@@ -17,17 +17,20 @@ public class EventController : BaseApiController
     private readonly IEventService _eventService;
     private readonly IHubContext<EventHub> _eventHub;
     private readonly IUserService _userService;
+    private readonly IPageService _pageService;
 
     public EventController(ILogger<EventController> logger,
                             IEventService eventService,
                             IHubContext<EventHub> eventHub,
-                            IUserService userService
+                            IUserService userService,
+                            IPageService pageService
                             ) : base(logger)
     {
         _logger = logger;
         _eventService = eventService;
         _eventHub = eventHub;
         _userService = userService;
+        _pageService = pageService;
     }
 
     [HttpGet("{id}")]
@@ -68,14 +71,79 @@ public class EventController : BaseApiController
         return Ok();
     }
 
+    [HttpPut("changeTurn")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ChangeTurn()
+    {
+        //TODO: Parametre olarak eventId alacak çünkü isteği atan tokendan user'ı bulacağız. tek bir aktif eventi olabilecekse parametresiz istek atması yeterli olacak
+        return Ok();
+    }
+
+    ///summary
+    //*CurrentPage'i güncelleme
+    [HttpPut("updatePage")]
+    [AllowAnonymous]
+    public async Task<IActionResult> UpdatePage(UpdatePageRequestVM requestVM)
+    {
+        //TODO: Bu servisin aktif çalışabilmesi için önceki oyunun düzgün bir şekilde tamamlanıp tamamlanmadığı kontrol edilmeli. 
+        //* sonrasında verilen page'den sonra bir page id varsa currentPageId üzerine setlenmeli.
+        var eventt = await _eventService.GetAsync(requestVM.EventId);
+
+        if (eventt is null)
+            throw new ApplicationException("There is no event with that Id!");
+
+        var page = await _pageService.GetByIdAsync(requestVM.PageId);
+
+        //* Oyun hali hazırda tamamlanmış olarak güncellenmişse direkt dönüyor.
+        if (page is null || page.IsCompleted)
+            return Ok();
+
+        page.IsCompleted = true;
+
+        eventt.CurrentPageId = eventt!.Pages!.FirstOrDefault(x => !x.IsCompleted)!.Id;
+
+        var eventHubModel = MapEventHubModelHelper(eventt);
+
+        await _eventHub.Clients.All.SendAsync("GetEvent", eventHubModel);
+
+        return Ok(eventHubModel);
+    }
+
+    ///summary
+    // oyuna o an katılan kullanıcıları güncelleme işlemi
+    [HttpPut("checkActiveUser")]
+    [AllowAnonymous]
+    public async Task<IActionResult> CheckActiveUser(int eventId, string mail, bool isActive)
+    {
+        //event i çek
+        //user listesindeki user'ı bul ve IsAvtive'i güncelle
+        //modeli dön
+        var eventt = await _eventService.GetAsync(eventId);
+
+        if (eventt is null)
+            throw new ApplicationException("There is no event with that Id!");
+
+        var user = eventt.Users.FirstOrDefault(x => x.EMail == mail);
+
+        if (user is not null)
+            user.IsActive = isActive;
+
+        var eventHubModel = MapEventHubModelHelper(eventt);
+
+        await _eventHub.Clients.All.SendAsync("GetEvent", eventHubModel);
+
+        return Ok(eventHubModel);
+    }
+
     #region Helpers
 
     private EventHubResponseVM MapEventHubModelHelper(EventResponseVM eventt)
     {
+        //TODO: Modele Page listesi eklenecek bir kaç yeri etiliyor bu yüzden ya extention mapleme olacak yada auto mapper eklenecek.
         var eventHubModel = new EventHubResponseVM
         {
             Id = eventt.Id,
-            CurrentPageId = 0, //* TODO: Tabloya eklenip dinamikleştirilecek.
+            CurrentPageId = eventt.CurrentPageId, //* TODO: Tabloya eklenip dinamikleştirilecek.
             Date = eventt.Date,
             Name = eventt.Name,
             PageIds = eventt.PageIds,

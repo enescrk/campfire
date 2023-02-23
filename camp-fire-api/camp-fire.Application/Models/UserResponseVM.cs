@@ -1,4 +1,3 @@
-using camp_fire.Domain.Entities;
 using camp_fire.Domain.Enums;
 
 namespace camp_fire.Application.Models;
@@ -13,8 +12,16 @@ public class UserResponseVM
     public string? EMail { get; set; }
     public UserType UserType { get; set; }
     public string? PhoneNumber { get; set; }
-
+    public bool IsActive { get; set; }
 }
+
+public class ActiveUserResponseVM
+{
+    public int Id { get; set; }
+    public string? Name { get; set; }
+    public string? Surname { get; set; }
+}
+
 public class GetUserRequestVM
 {
     public int? Id { get; set; }

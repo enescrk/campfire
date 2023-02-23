@@ -17,6 +17,7 @@ public class PageResponseVM
     public string? Name { get; set; }
     public string? EventName { get; set; }
     public int? ScoreboardId { get; set; }
+    public bool IsCompleted { get; set; }
 }
 
 public class GetPagesRequestVM

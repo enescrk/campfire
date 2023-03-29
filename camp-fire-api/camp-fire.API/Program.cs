@@ -15,8 +15,13 @@ builder.Services.AddControllers();
 builder.Services.AddSingleton(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddTransient<ICampFireDBContext, CampFireDBContext>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
-builder.Services.AddTransient<IEventService, EventService>();
-builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddScoped<IEventService, EventService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IPageService, PageService>();
+builder.Services.AddScoped<IStoryService, StoryService>();
+builder.Services.AddScoped<IQuestionService, QuestionService>();
+builder.Services.AddScoped<IScoreboardService, ScoreboardService>();
+// builder.Services.AddTransient<IUserConfirmationService, UserConfirmationService>();
 // builder.Services.AddTransient<EventHub>();
 
 var foo = builder.Configuration.GetConnectionString(nameof(CampFireDBContext));

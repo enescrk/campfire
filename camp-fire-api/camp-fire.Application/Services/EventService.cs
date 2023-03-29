@@ -48,6 +48,20 @@ public class EventService : IEventService
         return mappedEvent;
     }
 
+    public async Task UpdateCurrentPageAsync(UpdateEventRequestVM request)
+    {
+        var eventt = await _unitOfWork.GetRepository<Event>().GetByIdAsync(request.Id);
+
+        if (eventt is null)
+            throw new ApiException("Event couldn't find");
+
+        eventt.CurrentPageId = request.CurrentPageId;
+
+        _unitOfWork.GetRepository<Event>().Update(eventt);
+
+        await _unitOfWork.SaveChangesAsync();
+    }
+
     public async Task<EventResponseVM?> GetAsync(int id)
     {
         var eventt = _unitOfWork.GetRepository<Event>().FindOne(x => x.Id == id);

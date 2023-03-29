@@ -18,6 +18,8 @@ public class Event : BaseEntity
     public string? HashedKey { get; set; }
     public string? MeetingUrl { get; set; }
     public int UserId { get; set; }
+    public int? CurrentPageId { get; set; }
+    public int? CurrentUserId { get; set; }
 
     public virtual User? User { get; set; }
     public virtual ICollection<Page> Pages { get; set; }

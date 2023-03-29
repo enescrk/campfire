@@ -20,6 +20,12 @@ public class PageResponseVM
     public bool IsCompleted { get; set; }
 }
 
+public class UpdatePageIsCompleteRequestVM
+{
+    public int Id { get; set; }
+    public bool IsCompleted { get; set; }
+}
+
 public class GetPagesRequestVM
 {
     public int? Id { get; set; }

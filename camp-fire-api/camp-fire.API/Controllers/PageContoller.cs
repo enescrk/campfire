@@ -1,5 +1,6 @@
 using camp_fire.API.Configurations;
 using camp_fire.Application.IServices;
+using camp_fire.Application.Models;
 using camp_fire.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -38,7 +39,7 @@ public class PageController : BaseApiController
 
     [HttpPut]
     [AllowAnonymous]
-    public async Task<IActionResult> Put([FromBody] Page request)
+    public async Task<IActionResult> Put([FromBody] PageResponseVM request)
     {
         var result = await _pageService.UpdateAsync(request);
 

@@ -102,6 +102,14 @@ public class EventController : BaseApiController
 
         eventt.CurrentPageId = eventt!.Pages!.FirstOrDefault(x => !x.IsCompleted)!.Id;
 
+        _eventService.UpdateCurrentPageAsync(new UpdateEventRequestVM
+        {
+            Id = eventt.Id,
+            CurrentPageId = eventt.CurrentPageId
+        });
+
+        _pageService.UpdateIsCompleteAsync(new UpdatePageIsCompleteRequestVM { Id = page.Id, IsCompleted = page.IsCompleted });
+
         var eventHubModel = MapEventHubModelHelper(eventt);
 
         await _eventHub.Clients.All.SendAsync("GetEvent", eventHubModel);
@@ -143,7 +151,7 @@ public class EventController : BaseApiController
         var eventHubModel = new EventHubResponseVM
         {
             Id = eventt.Id,
-            CurrentPageId = eventt.CurrentPageId, //* TODO: Tabloya eklenip dinamikleştirilecek.
+            CurrentPageId = eventt.CurrentPageId,
             Date = eventt.Date,
             Name = eventt.Name,
             PageIds = eventt.PageIds,

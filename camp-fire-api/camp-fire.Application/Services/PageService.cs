@@ -22,7 +22,7 @@ public class PageService : IPageService
         return await _unitOfWork.SaveChangesAsync();
     }
 
-    public async Task<Page> UpdateAsync(Page request)
+    public async Task<Page> UpdateAsync(PageResponseVM request)
     {
         var page = await _unitOfWork.GetRepository<Page>().GetByIdAsync(request.Id);
 
@@ -39,6 +39,20 @@ public class PageService : IPageService
         var newPage = await _unitOfWork.GetRepository<Page>().GetByIdAsync(request.Id);
 
         return newPage;
+    }
+
+    public async Task UpdateIsCompleteAsync(UpdatePageIsCompleteRequestVM request)
+    {
+        var page = await _unitOfWork.GetRepository<Page>().GetByIdAsync(request.Id);
+
+        if (page is null)
+            throw new ApiException("Event couldn't find");
+
+        page.IsCompleted = request.IsCompleted;
+
+        _unitOfWork.GetRepository<Page>().Update(page);
+
+        await _unitOfWork.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(int id)

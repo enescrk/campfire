@@ -12,7 +12,7 @@ public class EventResponseVM
     public List<ScoreboardResponseVM>? Scoreboards { get; set; }
     public List<int>? PageIds { get; set; }
     public List<int>? ParticipiantIds { get; set; }
-    public int CurrentPageId { get; set; }
+    public int? CurrentPageId { get; set; }
     public int? CurrentUserId { get; set; }
     public List<PageResponseVM> Pages { get; set; }
     public List<UserResponseVM> Users { get; set; }
@@ -28,6 +28,7 @@ public class UpdateEventRequestVM
     public int? CompanyId { get; set; }
     public int[]? PageIds { get; set; }
     public string? MeetingUrl { get; set; }
+    public int? CurrentPageId { get; set; }
 }
 
 public class ChangeTurnRequestVM

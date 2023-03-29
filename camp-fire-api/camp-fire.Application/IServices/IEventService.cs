@@ -8,4 +8,5 @@ public interface IEventService
     Task<int> CreateAsync(Event request);
     Task<EventResponseVM> UpdateAsync(UpdateEventRequestVM request);
     Task<EventResponseVM?> GetAsync(int id);
+    Task UpdateCurrentPageAsync(UpdateEventRequestVM request);
 }

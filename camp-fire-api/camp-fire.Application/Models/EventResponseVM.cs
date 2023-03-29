@@ -14,7 +14,7 @@ public class EventResponseVM
     public List<int>? ParticipiantIds { get; set; }
     public int CurrentPageId { get; set; }
     public int? CurrentUserId { get; set; }
-    public List<Page> Pages { get; set; }
+    public List<PageResponseVM> Pages { get; set; }
     public List<UserResponseVM> Users { get; set; }
 }
 

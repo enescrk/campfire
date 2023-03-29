@@ -66,6 +66,13 @@ public class EventService : IEventService
             },
             ParticipiantIds = eventt.ParticipiantIds?.ToList(),
             PageIds = eventt.Pages?.Select(x => x.Id).ToList(),
+            Pages = eventt.Pages?.Select(x => new PageResponseVM
+            {
+                Id = x.Id,
+                IsCompleted = x.IsCompleted,
+                Name = x.Name,
+                ScoreboardId = x.Scoreboard?.Id
+            }).ToList(),
             Scoreboards = eventt.Scoreboards?.Select(x => new ScoreboardResponseVM
             {
                 Id = x.Id,
@@ -79,7 +86,7 @@ public class EventService : IEventService
         return await Task.FromResult(result);
     }
 
-    public async Task DeleteAsync(int id) 
+    public async Task DeleteAsync(int id)
     {
         var eventt = await _unitOfWork.GetRepository<Event>().GetByIdAsync(id);
 
@@ -99,6 +106,13 @@ public class EventService : IEventService
             Date = eventt.Date,
             HashedKey = eventt.HashedKey,
             PageIds = eventt.Pages.Select(x => x.Id).ToList(),
+            Pages = eventt.Pages?.Select(x => new PageResponseVM
+            {
+                Id = x.Id,
+                IsCompleted = x.IsCompleted,
+                Name = x.Name,
+                ScoreboardId = x.Scoreboard?.Id
+            }).ToList(),
             User = new UserResponseVM
             {
                 Id = eventt.UserId,

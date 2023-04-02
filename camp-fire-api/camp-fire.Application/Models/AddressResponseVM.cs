@@ -1,4 +1,5 @@
 namespace camp_fire.Application.Models;
+
 public class AddressResponseVM
 {
     public int CountryId { get; set; }
@@ -31,6 +32,3 @@ public class CreateAddressRequestVM
     public string? County { get; set; }
     public string? OpenAddress { get; set; }
 }
-
-
-

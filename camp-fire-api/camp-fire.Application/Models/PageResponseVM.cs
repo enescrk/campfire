@@ -6,7 +6,6 @@
 //   public virtual Event? Event { get; set; }
 //   public virtual Scoreboard? Scoreboard { get; set; }
 //}
-using camp_fire.Domain.Entities;
 
 namespace camp_fire.Application.Models;
 

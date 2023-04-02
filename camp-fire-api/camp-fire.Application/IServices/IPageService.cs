@@ -3,7 +3,7 @@ using camp_fire.Domain.Entities;
 
 namespace camp_fire.Application.IServices;
 
-public interface IPageService
+public interface IPageService : IBaseService
 {
     Task<int> CreateAsync(Page request);
     Task<Page> UpdateAsync(PageResponseVM request);

@@ -41,6 +41,14 @@ public class EventController : BaseApiController
         return Ok(new BaseApiResult { Data = result });
     }
 
+    [HttpGet]
+    [AllowAnonymous]
+    public async Task<IActionResult> Get(GetEventsRequestVM request)
+    {
+        var result = await _eventService.GetAsync(request);
+        return Ok(new BaseApiResult { Data = result });
+    }
+
     [HttpPost]
     [AllowAnonymous]
     public async Task<IActionResult> Post([FromBody] Event request)
@@ -87,30 +95,9 @@ public class EventController : BaseApiController
     {
         //TODO: Bu servisin aktif çalışabilmesi için önceki oyunun düzgün bir şekilde tamamlanıp tamamlanmadığı kontrol edilmeli. 
         //* sonrasında verilen page'den sonra bir page id varsa currentPageId üzerine setlenmeli.
-        var eventt = await _eventService.GetAsync(requestVM.EventId);
+        var resultEvent = await _eventService.UpdateCurrentPageAsync(requestVM);
 
-        if (eventt is null)
-            throw new ApplicationException("There is no event with that Id!");
-
-        var page = await _pageService.GetByIdAsync(requestVM.PageId);
-
-        //* Oyun hali hazırda tamamlanmış olarak güncellenmişse direkt dönüyor.
-        if (page is null || page.IsCompleted)
-            return Ok();
-
-        page.IsCompleted = true;
-
-        eventt.CurrentPageId = eventt!.Pages!.FirstOrDefault(x => !x.IsCompleted)!.Id;
-
-        _eventService.UpdateCurrentPageAsync(new UpdateEventRequestVM
-        {
-            Id = eventt.Id,
-            CurrentPageId = eventt.CurrentPageId
-        });
-
-        _pageService.UpdateIsCompleteAsync(new UpdatePageIsCompleteRequestVM { Id = page.Id, IsCompleted = page.IsCompleted });
-
-        var eventHubModel = MapEventHubModelHelper(eventt);
+        var eventHubModel = MapEventHubModelHelper(resultEvent!);
 
         await _eventHub.Clients.All.SendAsync("GetEvent", eventHubModel);
 

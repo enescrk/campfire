@@ -45,14 +45,9 @@ public class PageService : IPageService
     {
         var page = await _unitOfWork.GetRepository<Page>().GetByIdAsync(request.Id);
 
-        if (page is null)
-            throw new ApiException("Event couldn't find");
-
         page.IsCompleted = request.IsCompleted;
 
         _unitOfWork.GetRepository<Page>().Update(page);
-
-        await _unitOfWork.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(int id)
@@ -102,5 +97,10 @@ public class PageService : IPageService
         };
 
         return await Task.FromResult(result);
+    }
+
+    public async Task SaveChangesAsync()
+    {
+        await _unitOfWork.SaveChangesAsync();
     }
 }

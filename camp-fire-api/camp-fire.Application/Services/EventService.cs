@@ -48,18 +48,30 @@ public class EventService : IEventService
         return mappedEvent;
     }
 
-    public async Task UpdateCurrentPageAsync(UpdateEventRequestVM request)
+    public async Task<EventResponseVM> UpdateCurrentPageAsync(UpdatePageRequestVM request)
     {
-        var eventt = await _unitOfWork.GetRepository<Event>().GetByIdAsync(request.Id);
+        var eventt = await _unitOfWork.GetRepository<Event>().GetByIdAsync(request.EventId);
 
         if (eventt is null)
-            throw new ApiException("Event couldn't find");
+            throw new NullReferenceException("Event couldn't find");
 
-        eventt.CurrentPageId = request.CurrentPageId;
+        var page = eventt.Pages.FirstOrDefault(x => x.Id == request.PageId);
 
+        if (page is null)
+            throw new ApiException("Page couldn't find");
+
+        page.IsCompleted = true;
+
+        eventt.CurrentPageId = eventt!.Pages!.FirstOrDefault(x => !x.IsCompleted)!.Id;
+
+        _unitOfWork.GetRepository<Page>().Update(page);
         _unitOfWork.GetRepository<Event>().Update(eventt);
 
         await _unitOfWork.SaveChangesAsync();
+
+        var mappedEvent = MapEventResposeVMHelper(eventt);
+
+        return mappedEvent;
     }
 
     public async Task<EventResponseVM?> GetAsync(int id)
@@ -100,6 +112,53 @@ public class EventService : IEventService
         return await Task.FromResult(result);
     }
 
+    public async Task<List<EventResponseVM>?> GetAsync(GetEventsRequestVM request)
+    {
+        var eventList = _unitOfWork.GetRepository<Event>().Find(x => !x.IsDeleted
+        && request.Id == null || x.Id == request.Id
+        && request.Date == null || x.Date == request.Date
+        && request.UserId == null || x.UserId == request.UserId
+        && request.CurrentUserId == null || x.CurrentUserId == request.CurrentUserId
+        && request.CurrentPageId == null || x.CurrentPageId == request.CurrentPageId
+        && request.CompanyId == null || x.CompanyId == request.CompanyId
+        && request.ParticipiantId == null || (x.ParticipiantIds != null && x.ParticipiantIds.Contains(request.ParticipiantId!.Value))
+        && string.IsNullOrEmpty(request.Name) || x.Name == request.Name!.ToLower().Trim()
+        && string.IsNullOrEmpty(request.HashedKey) || x.HashedKey == request.HashedKey!.ToLower().Trim()
+        && string.IsNullOrEmpty(request.MeetingUrl) || x.MeetingUrl == request.MeetingUrl!.ToLower().Trim())
+        .Select(x => new EventResponseVM
+        {
+            Id = x.Id,
+            HashedKey = x.HashedKey,
+            Name = x.Name,
+            Date = x.Date,
+            User = new UserResponseVM
+            {
+                Id = x.UserId,
+                Name = x.User.Name,
+                Surname = x.User.Surname
+            },
+            ParticipiantIds = x.ParticipiantIds.ToList(),
+            PageIds = x.Pages.Select(y => x.Id).ToList(),
+            Pages = x.Pages.Select(y => new PageResponseVM
+            {
+                Id = y.Id,
+                IsCompleted = y.IsCompleted,
+                Name = y.Name,
+                ScoreboardId = y.Scoreboard.Id
+            }).ToList(),
+            Scoreboards = x.Scoreboards.Select(y => new ScoreboardResponseVM
+            {
+                Id = y.Id,
+                EventId = y.EventId,
+                PageId = y.PageId,
+                UserId = y.UserId,
+                Score = y.Score
+            }).ToList()
+        }).ToList();
+
+        return await Task.FromResult(eventList);
+    }
+
     public async Task DeleteAsync(int id)
     {
         var eventt = await _unitOfWork.GetRepository<Event>().GetByIdAsync(id);
@@ -109,6 +168,12 @@ public class EventService : IEventService
 
         _unitOfWork.GetRepository<Event>().Delete(eventt);
     }
+
+    public async Task SaveChangesAsync()
+    {
+        await _unitOfWork.SaveChangesAsync();
+    }
+
     #region Helpers 
 
     private EventResponseVM MapEventResposeVMHelper(Event eventt)

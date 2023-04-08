@@ -4,6 +4,8 @@ using camp_fire.Application.IServices;
 using camp_fire.Application.Services;
 using camp_fire.Domain;
 using camp_fire.Domain.SeedWork;
+using camp_fire.Infrastructure.Email;
+using camp_fire.Infrastructure.Settings;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +23,10 @@ builder.Services.AddScoped<IPageService, PageService>();
 builder.Services.AddScoped<IStoryService, StoryService>();
 builder.Services.AddScoped<IQuestionService, QuestionService>();
 builder.Services.AddScoped<IScoreboardService, ScoreboardService>();
+builder.Services.AddScoped<IGameService, GameService>();
+
+builder.Services.AddTransient<IEmailService, EmailService>();
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 // builder.Services.AddTransient<IUserConfirmationService, UserConfirmationService>();
 // builder.Services.AddTransient<EventHub>();
 
@@ -49,8 +55,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 // if (app.Environment.IsDevelopment())
 // {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+app.UseSwagger();
+app.UseSwaggerUI();
 // }
 
 app.UseCors();

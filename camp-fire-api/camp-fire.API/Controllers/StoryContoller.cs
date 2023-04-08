@@ -21,7 +21,7 @@ public class StoryController : BaseApiController
         _storyService = storyService;
     }
 
-     [HttpGet("{id}")]
+    [HttpGet("{id}")]
     [AllowAnonymous]
     public async Task<IActionResult> Get(int id)
     {

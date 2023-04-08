@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using camp_fire.Domain;
@@ -11,9 +12,10 @@ using camp_fire.Domain;
 namespace camp_fire.Domain.Migrations
 {
     [DbContext(typeof(CampFireDBContext))]
-    partial class CampFireDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230406140747_GameTableAdded")]
+    partial class GameTableAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -249,9 +251,6 @@ namespace camp_fire.Domain.Migrations
                     b.Property<int>("EventId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("GameId")
-                        .HasColumnType("integer");
-
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("boolean");
 
@@ -273,8 +272,6 @@ namespace camp_fire.Domain.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("EventId");
-
-                    b.HasIndex("GameId");
 
                     b.ToTable("Pages");
                 });
@@ -571,15 +568,7 @@ namespace camp_fire.Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("camp_fire.Domain.Entities.Game", "Game")
-                        .WithMany("Pages")
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Event");
-
-                    b.Navigation("Game");
                 });
 
             modelBuilder.Entity("camp_fire.Domain.Entities.Scoreboard", b =>
@@ -651,11 +640,6 @@ namespace camp_fire.Domain.Migrations
                     b.Navigation("Pages");
 
                     b.Navigation("Scoreboards");
-                });
-
-            modelBuilder.Entity("camp_fire.Domain.Entities.Game", b =>
-                {
-                    b.Navigation("Pages");
                 });
 
             modelBuilder.Entity("camp_fire.Domain.Entities.Page", b =>

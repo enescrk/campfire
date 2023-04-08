@@ -1,3 +1,5 @@
+namespace camp_fire.Application.Models.Request;
+
 public class GetEventsRequestVM
 {
     public int? Id { get; set; }

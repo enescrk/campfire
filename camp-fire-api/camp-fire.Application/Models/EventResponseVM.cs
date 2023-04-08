@@ -1,5 +1,3 @@
-using camp_fire.Domain.Entities;
-
 namespace camp_fire.Application.Models;
 
 public class EventResponseVM
@@ -26,9 +24,14 @@ public class UpdateEventRequestVM
     public DateTime Date { get; set; }
     public int[]? ParticipiantIds { get; set; }
     public int? CompanyId { get; set; }
-    public int[]? PageIds { get; set; }
+    public List<int> GameIds { get; set; }
     public string? MeetingUrl { get; set; }
     public int? CurrentPageId { get; set; }
+}
+
+public class CreateEventReqeustVM : UpdateEventRequestVM
+{
+    public List<CreateUserRequestVM> ParticipiantUsers { get; set; }
 }
 
 public class ChangeTurnRequestVM
@@ -40,6 +43,12 @@ public class UpdatePageRequestVM
 {
     public int EventId { get; set; }
     public int PageId { get; set; }
+}
+
+public class UpdateActiveUserRequestVM
+{
+    public int EventId { get; set; }
+    public int UserId { get; set; }
 }
 
 public class PageVM

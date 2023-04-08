@@ -1,4 +1,7 @@
 using camp_fire.API.Configurations;
+using camp_fire.Application.IServices;
+using camp_fire.Application.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace camp_fire.API.Controllers;
@@ -13,33 +16,37 @@ public class UserController : BaseApiController
     };
 
     private readonly ILogger<UserController> _logger;
+    private readonly IUserService _userService;
 
-    public UserController(ILogger<UserController> logger) : base(logger)
+    public UserController(ILogger<UserController> logger,
+                        IUserService userService) : base(logger)
     {
         _logger = logger;
+        _userService = userService;
     }
 
-    [HttpGet]
-    public IEnumerable<object> Get()
+    [HttpGet("{id}")]
+    [AllowAnonymous]
+    public async Task<IActionResult> Get(int id)
     {
-        return Enumerable.Range(1, 5).Select(index => new
-        {
-            Date = DateTime.Now.AddDays(index),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-        })
-        .ToArray();
+        var result = await _userService.GetByIdAsync(id);
+        return Ok(new BaseApiResult { Data = result });
     }
 
-    [HttpGet("test/{idd}")]
-    public IEnumerable<object> GetList()
+    [HttpPost]
+    [AllowAnonymous]
+    public async Task<IActionResult> Post([FromBody] CreateUserRequestVM request)
     {
-        return Enumerable.Range(1, 5).Select(index => new
-        {
-            Date = DateTime.Now.AddDays(index),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-        })
-        .ToArray();
+        var result = await _userService.CreateAsync(request);
+        return Ok(result);
+    }
+
+    [HttpPut]
+    [AllowAnonymous]
+    public async Task<IActionResult> Put([FromBody] UpdateUserRequestVM request)
+    {
+        var result = await _userService.UpdateAsync(request);
+
+        return Ok();
     }
 }

@@ -71,6 +71,8 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
 
             await Table.AddAsync(item);
         }
+
+        await _context.SaveChangesAsync();
     }
 
     public void Create(T entity)

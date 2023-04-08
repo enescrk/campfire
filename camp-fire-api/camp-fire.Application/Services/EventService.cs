@@ -1,23 +1,155 @@
 using camp_fire.Application.IServices;
 using camp_fire.Application.Models;
+using camp_fire.Application.Models.Request;
 using camp_fire.Domain.Entities;
 using camp_fire.Domain.SeedWork;
 using camp_fire.Domain.SeedWork.Exceptions;
+using camp_fire.Infrastructure.Email;
 
 namespace camp_fire.Application.Services;
 
 public class EventService : IEventService
 {
+    //TODO: Etkinliğer davetli ekleme-çıkarma servisleri hazırlanacak.
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IEmailService _emailService;
 
-    public EventService(IUnitOfWork unitOfWork)
+    public EventService(IUnitOfWork unitOfWork,
+                        IEmailService emailService)
     {
         _unitOfWork = unitOfWork;
+        _emailService = emailService;
     }
 
-    public async Task<int> CreateAsync(Event request)
+    public async Task<int> CreateAsync(CreateEventReqeustVM request)
     {
-        await _unitOfWork.GetRepository<Event>().CreateAsync(request);
+        //TODO: Etklinliği oluşturan kullanıcının bilgileri çekilecek. bunun için login oluşturulacak. Token'ı üzerinden Id'si etkinliğe setlenecek. Mail adresi de davetlielerer gönderilen mail'e eklenecek.(Soru iptal erteleme işlemlerine oluşturan kişi bakacak.)
+        //TODO: Email template'i oluşturulacak.
+        //TODO: Email'e tıklandığında servise istek atılacak ve etkinlik zamanı ve yetki kontrolleri bu serviste olacak.
+        var games = _unitOfWork.GetRepository<Game>().Find(x => request.GameIds.Contains(x.Id)).ToList();
+
+        if (games is null)
+            throw new ApplicationException("Games couldn't found");
+
+        #region Var olmayan kullanıcıları bulup db'ye ekle
+
+        var requestedEmails = request.ParticipiantUsers.Select(x => x.EMail).ToList();
+
+        var users = _unitOfWork.GetRepository<User>().Find(x => requestedEmails.Contains(x.EMail)).ToList();
+
+        var existUserMails = users.Select(x => x.EMail).ToList();
+
+        var newUserList = new List<User>();
+
+        foreach (var item in request.ParticipiantUsers)
+        {
+            var userExist = existUserMails.FirstOrDefault(x => x == item.EMail);
+
+            if (userExist is null)
+            {
+                var user = new User
+                {
+                    Name = item.Name,
+                    Surname = item.Surname,
+                    EMail = item.Surname,
+                    PhoneNumber = item.PhoneNumber
+                };
+
+                newUserList.Add(user);
+            }
+        }
+
+        await _unitOfWork.GetRepository<User>().BulkCreateAsync(newUserList);
+
+        #endregion
+
+        #region Eventi oluşturma
+
+        var newEvent = new Event
+        {
+            Name = request.Name,
+            CompanyId = request.CompanyId,
+            Date = request.Date,
+            MeetingUrl = $"https://campfire.com/event", //TODO: kaldırılabilir
+            HashedKey = "", //TODO: kaldırılabilir,
+            UserId = 3,
+        };
+
+        await _unitOfWork.GetRepository<Event>().CreateAsync(newEvent);
+
+        #endregion
+
+        #region Page kayıtlarını oluşturma
+
+        var newPages = new List<Page>();
+
+        foreach (var item in games)
+        {
+            var page = new Page
+            {
+                Event = newEvent,
+                CreatedBy = 3,
+                Game = item,
+                IsCompleted = false,
+                Name = item.Name
+            };
+            newPages.Add(page);
+        }
+
+        await _unitOfWork.GetRepository<Page>().BulkCreateAsync(newPages);
+
+        #endregion
+
+        #region Scoreboard ve Event-User kayıtlarını oluşturma
+        //* Scoreboard kaydı her Oyuncunun Event için her oyun için ayrı bir kaydı oluşturulur. Her oyuncunun her oyundaki score kaydını bulabilmemizi sağlar.
+
+        var participiantUsers = new List<User>();
+        var newParticipiantList = new List<EventParticipant>();
+
+        if (users is null)
+            participiantUsers.AddRange(newUserList);
+        else
+            participiantUsers.AddRange(users);
+
+        var newScorboards = new List<Scoreboard>();
+        var newEvetParticipiants = new List<EventParticipant>();
+
+        foreach (var user in participiantUsers)
+        {
+            foreach (var page in newPages)
+            {
+                var scoreboard = new Scoreboard
+                {
+                    Event = newEvent,
+                    CreatedBy = 3,
+                    Score = 0,
+                    User = user,
+                    Page = page
+                };
+
+                newScorboards.Add(scoreboard);
+            }
+
+            var eventParticipant = new EventParticipant
+            {
+                Event = newEvent,
+                User = user
+            };
+
+            newEvetParticipiants.Add(eventParticipant);
+        }
+
+        await _unitOfWork.GetRepository<Scoreboard>().BulkCreateAsync(newScorboards);
+        await _unitOfWork.GetRepository<EventParticipant>().BulkCreateAsync(newEvetParticipiants);
+
+        #endregion
+
+        await _emailService.SendEmailAsync(new SendEmailModel
+        {
+            Subject = "Online Kamp Daveti",
+            Body = $"Arkadaşın seni eğlenceli oyunları içeren online bir etkinliğe davet etti!. Etkinliğe zamanı geldiğinde aşağıdaki linkten ulaşabilirsin. Başlangıç tarihi: {request.Date.Date}",
+            To = requestedEmails
+        });
 
         return await _unitOfWork.SaveChangesAsync();
     }
@@ -34,7 +166,7 @@ public class EventService : IEventService
         eventt.HashedKey = request.HashedKey;
         eventt.MeetingUrl = request.MeetingUrl;
         eventt.ParticipiantIds = request.ParticipiantIds;
-        eventt.PageIds = request.PageIds;
+        eventt.PageIds = request.GameIds.ToArray(); //TODO: düzenlenecek.
         eventt.CompanyId = request.CompanyId;
 
         _unitOfWork.GetRepository<Event>().Update(eventt);
@@ -74,9 +206,57 @@ public class EventService : IEventService
         return mappedEvent;
     }
 
+    // public async Task<EventResponseVM> UpdateActiveUserAsync(UpdateActiveUserRequestVM request)
+    // {
+    //     //* Event tablosuna users ilişkisi eklenip onun üzerinden güncellenebilir.
+    //     var eventt = await GetAsync(request.EventId);
+
+    //     if (eventt is null || eventt.ParticipiantIds is null)
+    //         throw new NullReferenceException("Event couldn't find or Event does not have any Participiant");
+
+    //     if (!eventt.ParticipiantIds.Any(x => x == request.UserId))
+    //         throw new ApplicationException("Event does not contains this participiant");
+
+    //     var user = await _unitOfWork.GetRepository<User>().GetByIdAsync(request.UserId);
+
+    //     user.IsActive = true;
+
+    //     eventt.users
+
+    //     eventt.CurrentUserId = eventt!.Pages!.FirstOrDefault(x => !x.IsCompleted)!.Id;
+
+    //     _unitOfWork.GetRepository<Page>().Update(page);
+    //     _unitOfWork.GetRepository<Event>().Update(eventt);
+
+    //     await _unitOfWork.SaveChangesAsync();
+
+    //     var mappedEvent = MapEventResposeVMHelper(eventt);
+
+    //     return mappedEvent;
+    // }
+
     public async Task<EventResponseVM?> GetAsync(int id)
     {
+        List<UserResponseVM>? users = null;
+
         var eventt = _unitOfWork.GetRepository<Event>().FindOne(x => x.Id == id);
+
+        if (eventt.ParticipiantIds is not null)
+        {
+            users = new List<UserResponseVM>();
+            users = _unitOfWork.GetRepository<User>().Find(x => eventt.ParticipiantIds.Contains(x.Id)).
+            Select(x => new UserResponseVM
+            {
+                Id = x.Id,
+                EMail = x.EMail,
+                IsActive = x.IsActive,
+                Name = x.Name,
+                Surname = x.Surname,
+                Gender = x.Gender,
+                PhoneNumber = x.PhoneNumber,
+                UserType = x.UserType
+            }).ToList();
+        }
 
         var result = new EventResponseVM
         {
@@ -90,6 +270,7 @@ public class EventService : IEventService
                 Name = eventt.User?.Name,
                 Surname = eventt.User?.Surname
             },
+            Users = users,
             ParticipiantIds = eventt.ParticipiantIds?.ToList(),
             PageIds = eventt.Pages?.Select(x => x.Id).ToList(),
             Pages = eventt.Pages?.Select(x => new PageResponseVM

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using camp_fire.Domain;
@@ -11,9 +12,10 @@ using camp_fire.Domain;
 namespace camp_fire.Domain.Migrations
 {
     [DbContext(typeof(CampFireDBContext))]
-    partial class CampFireDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230405115841_EventAndUserUpdate")]
+    partial class EventAndUserUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -193,45 +195,6 @@ namespace camp_fire.Domain.Migrations
                     b.ToTable("EventLogs");
                 });
 
-            modelBuilder.Entity("camp_fire.Domain.Entities.Game", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("UpdatedBy")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Games");
-                });
-
             modelBuilder.Entity("camp_fire.Domain.Entities.Page", b =>
                 {
                     b.Property<int>("Id")
@@ -247,9 +210,6 @@ namespace camp_fire.Domain.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("EventId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("GameId")
                         .HasColumnType("integer");
 
                     b.Property<bool>("IsCompleted")
@@ -273,8 +233,6 @@ namespace camp_fire.Domain.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("EventId");
-
-                    b.HasIndex("GameId");
 
                     b.ToTable("Pages");
                 });
@@ -571,15 +529,7 @@ namespace camp_fire.Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("camp_fire.Domain.Entities.Game", "Game")
-                        .WithMany("Pages")
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Event");
-
-                    b.Navigation("Game");
                 });
 
             modelBuilder.Entity("camp_fire.Domain.Entities.Scoreboard", b =>
@@ -651,11 +601,6 @@ namespace camp_fire.Domain.Migrations
                     b.Navigation("Pages");
 
                     b.Navigation("Scoreboards");
-                });
-
-            modelBuilder.Entity("camp_fire.Domain.Entities.Game", b =>
-                {
-                    b.Navigation("Pages");
                 });
 
             modelBuilder.Entity("camp_fire.Domain.Entities.Page", b =>

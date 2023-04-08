@@ -3,6 +3,7 @@ using camp_fire.API.Hubs;
 using camp_fire.API.Models;
 using camp_fire.Application.IServices;
 using camp_fire.Application.Models;
+using camp_fire.Application.Models.Request;
 using camp_fire.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -51,8 +52,11 @@ public class EventController : BaseApiController
 
     [HttpPost]
     [AllowAnonymous]
-    public async Task<IActionResult> Post([FromBody] Event request)
+    public async Task<IActionResult> Post([FromBody] CreateEventReqeustVM request)
     {
+        if (request.Date.Date < DateTime.Now.Date)
+            throw new ApplicationException("Event date can not be earlier than today!");
+
         var result = await _eventService.CreateAsync(request);
         return Ok(result);
     }
@@ -70,13 +74,6 @@ public class EventController : BaseApiController
         await _eventHub.Clients.All.SendAsync("GetEvent", eventHubModel);
 
         return Ok(result);
-    }
-
-    [HttpGet("test")]
-    [AllowAnonymous]
-    public async Task<IActionResult> Get()
-    {
-        return Ok();
     }
 
     [HttpPut("changeTurn")]

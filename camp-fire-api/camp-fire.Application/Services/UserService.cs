@@ -14,6 +14,7 @@ public class UserService : IUserService
     {
         _unitOfWork = unitOfWork;
     }
+
     public async Task<List<UserResponseVM>> GetAsync(GetUserRequestVM request)
     {
         var users = _unitOfWork.GetRepository<User>().Find(x =>
@@ -61,7 +62,8 @@ public class UserService : IUserService
             EMail = request.EMail,
             Gender = request.Gender,
             UserType = request.UserType,
-            PhoneNumber = request.PhoneNumber
+            PhoneNumber = request.PhoneNumber,
+            IsActive = false //* ilk başta he default false setlenecek.
         };
 
         await _unitOfWork.GetRepository<User>().CreateAsync(user);
@@ -82,6 +84,7 @@ public class UserService : IUserService
         user.EMail = request.EMail;
         user.Gender = request.Gender;
         user.UserType = request.UserType;
+        user.IsActive = request.IsActive;
 
         _unitOfWork.GetRepository<User>().Update(user);
 

@@ -1,9 +1,8 @@
-namespace camp_fire.Domain.Enums
+namespace camp_fire.Domain.Enums;
+
+public enum UserType
 {
-    public enum UserType
-    {
-        Admin = 1,
-        CS = 2,
-        Member = 3
-    }
+    Admin = 1,
+    CS = 2,
+    Member = 3
 }

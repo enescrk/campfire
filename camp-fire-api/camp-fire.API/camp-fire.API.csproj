@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\camp-fire.Domain\camp-fire.Domain.csproj" />
     <ProjectReference Include="..\camp-fire.Application\camp-fire.Application.csproj" />
+    <ProjectReference Include="..\camp-fire.Infrastructure\camp-fire.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

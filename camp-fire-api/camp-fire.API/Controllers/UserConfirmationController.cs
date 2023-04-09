@@ -1,6 +1,7 @@
 using camp_fire.API.Configurations;
 using camp_fire.API.Hubs;
 using camp_fire.Application.IServices;
+using camp_fire.Application.Models.Request;
 using camp_fire.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -50,12 +51,12 @@ public class UserConfirmationController : BaseApiController
         return Ok(result);
     }
 
-    [HttpGet("test")]
-    [AllowAnonymous]
-    public async Task<IActionResult> Get([FromBody] UserConfirmation request)
-    {
-        // var result = await _eventService.UpdateAsync(request);
 
-        return Ok();
+    [HttpPost("confirm")]
+    [AllowAnonymous]
+    public async Task<IActionResult> Confirm([FromBody] UserConfirmRequestVM request)
+    {
+        var result = await _usercomfirmationService.ConfirmAsync(request);
+        return Ok(result);
     }
 }

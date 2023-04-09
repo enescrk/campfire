@@ -25,7 +25,7 @@ public class EventService : IEventService
     {
         //TODO: Etklinliği oluşturan kullanıcının bilgileri çekilecek. bunun için login oluşturulacak. Token'ı üzerinden Id'si etkinliğe setlenecek. Mail adresi de davetlielerer gönderilen mail'e eklenecek.(Soru iptal erteleme işlemlerine oluşturan kişi bakacak.)
         //TODO: Email template'i oluşturulacak.
-        //TODO: Email'e tıklandığında servise istek atılacak ve etkinlik zamanı ve yetki kontrolleri bu serviste olacak.
+        //TODO: Emaideki linke tıklandığında servise istek atılacak ve etkinlik zamanı ve yetki kontrolleri bu serviste olacak.
         var games = _unitOfWork.GetRepository<Game>().Find(x => request.GameIds.Contains(x.Id)).ToList();
 
         if (games is null)

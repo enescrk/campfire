@@ -1,6 +1,7 @@
 using camp_fire.API.Configurations;
 using camp_fire.Application.IServices;
 using camp_fire.Application.Models;
+using camp_fire.Application.Models.Request;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,11 +11,6 @@ namespace camp_fire.API.Controllers;
 [Route("[controller]")]
 public class UserController : BaseApiController
 {
-    private static readonly string[] Summaries = new[]
-    {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
-
     private readonly ILogger<UserController> _logger;
     private readonly IUserService _userService;
 
@@ -38,6 +34,14 @@ public class UserController : BaseApiController
     public async Task<IActionResult> Post([FromBody] CreateUserRequestVM request)
     {
         var result = await _userService.CreateAsync(request);
+        return Ok(result);
+    }
+
+    [HttpPost("login")]
+    [AllowAnonymous]
+    public async Task<IActionResult> Post([FromBody] LoginRequestVM request)
+    {
+        var result = await _userService.LoginAsync(request);
         return Ok(result);
     }
 

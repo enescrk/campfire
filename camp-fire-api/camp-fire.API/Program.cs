@@ -21,13 +21,13 @@ builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPageService, PageService>();
 builder.Services.AddScoped<IStoryService, StoryService>();
+builder.Services.AddScoped<IUserConfirmationService, UserConfirmationService>();
 builder.Services.AddScoped<IQuestionService, QuestionService>();
 builder.Services.AddScoped<IScoreboardService, ScoreboardService>();
 builder.Services.AddScoped<IGameService, GameService>();
 
 builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
-// builder.Services.AddTransient<IUserConfirmationService, UserConfirmationService>();
 // builder.Services.AddTransient<EventHub>();
 
 var foo = builder.Configuration.GetConnectionString(nameof(CampFireDBContext));

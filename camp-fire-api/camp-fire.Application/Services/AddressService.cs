@@ -14,20 +14,20 @@ public class AddressService : IAddressService
     {
         _unitOfWork = unitOfWork;
     }
-  public async Task<List<AddressResponseVM>> GetAsync(GetAddressRequestVM request)
+    public async Task<List<AddressResponseVM>> GetAsync(GetAddressRequestVM request)
     {
         var addresses = _unitOfWork.GetRepository<Address>().Find(x =>
         request.Id == null || x.Id == request.Id
-        && (request.Id == null || x.Id== request.Id)
-    
+        && (request.Id == null || x.Id == request.Id)
+
         )
         .Select(x => new AddressResponseVM
         {
-            CountryId=x.CountryId,
-            UserId=x.UserId,
-            City=x.City,
-            County=x.County,
-            OpenAddress=x.OpenAddress
+            CountryId = x.CountryId,
+            UserId = x.UserId,
+            City = x.City,
+            County = x.County,
+            OpenAddress = x.OpenAddress
 
         }).ToList();
 
@@ -49,11 +49,11 @@ public class AddressService : IAddressService
     {
         var address = new Address
         {
-            CountryId=request.CountryId,
-            UserId=request.UserId,
-            City=request.City,
-            County=request.County,
-            OpenAddress=request.OpenAddress
+            CountryId = request.CountryId,
+            UserId = request.UserId,
+            City = request.City,
+            County = request.County,
+            OpenAddress = request.OpenAddress
         };
 
         await _unitOfWork.GetRepository<Address>().CreateAsync(address);
@@ -68,12 +68,12 @@ public class AddressService : IAddressService
         if (address is null)
             throw new ApiException("Address couldn't find");
 
-             address.CountryId=request.CountryId;
-             address.UserId=request.UserId;
-             address.City=request.City;
-             address.County=request.County;
-             address.OpenAddress=request.OpenAddress;
-       
+        address.CountryId = request.CountryId;
+        address.UserId = request.UserId;
+        address.City = request.City;
+        address.County = request.County;
+        address.OpenAddress = request.OpenAddress;
+
         _unitOfWork.GetRepository<Address>().Update(address);
 
         await _unitOfWork.SaveChangesAsync();
@@ -101,11 +101,11 @@ public class AddressService : IAddressService
     {
         var addressResponseVM = new AddressResponseVM
         {
-            CountryId=address.CountryId,
-            UserId=address.UserId,
-            City=address.City,
-            County=address.County,
-            OpenAddress=address.OpenAddress
+            CountryId = address.CountryId,
+            UserId = address.UserId,
+            City = address.City,
+            County = address.County,
+            OpenAddress = address.OpenAddress
         };
         return addressResponseVM;
     }

@@ -1,6 +1,6 @@
-namespace camp_fire.Application.Token;
+namespace camp_fire.Application.Models.Response;
 
-public class JwtTokenModel
+public class UserConfirmResponseVM
 {
     public int Id { get; set; }
     public string? FullName { get; set; }

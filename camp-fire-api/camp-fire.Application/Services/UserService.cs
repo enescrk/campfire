@@ -1,18 +1,24 @@
+using camp_fire.Application.Configurations.Helpers;
 using camp_fire.Application.IServices;
 using camp_fire.Application.Models;
+using camp_fire.Application.Models.Request;
 using camp_fire.Domain.Entities;
 using camp_fire.Domain.SeedWork;
 using camp_fire.Domain.SeedWork.Exceptions;
+using camp_fire.Infrastructure.Email;
 
 namespace camp_fire.Application.Services;
 
 public class UserService : IUserService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IEmailService _emailService;
 
-    public UserService(IUnitOfWork unitOfWork)
+    public UserService(IUnitOfWork unitOfWork,
+                       IEmailService emailService)
     {
         _unitOfWork = unitOfWork;
+        _emailService = emailService;
     }
 
     public async Task<List<UserResponseVM>> GetAsync(GetUserRequestVM request)
@@ -69,6 +75,62 @@ public class UserService : IUserService
         await _unitOfWork.GetRepository<User>().CreateAsync(user);
 
         return await _unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task<string> LoginAsync(LoginRequestVM request)
+    {
+        #region User check
+
+        var user = _unitOfWork.GetRepository<User>().FindOne(x => x.EMail!.ToLower().Contains(request.Email.ToLower().Trim()));
+
+        if (user is null)
+        {
+            user = new User
+            {
+                EMail = request.Email.Trim(),
+                Name = request.Name.Trim(),
+                Surname = request.Surname.Trim()
+            };
+
+            await _unitOfWork.GetRepository<User>().CreateAsync(user);
+        }
+
+        #endregion
+
+        #region UserConfirm
+
+        var code = GenerateCodeHelper.GenerateCode(OnlyInt: true);
+
+        var userConfirmation = new UserConfirmation
+        {
+            User = user,
+            Key = code,
+            Secret = GenerateCodeHelper.GenerateCode()
+        };
+
+        await _unitOfWork.GetRepository<UserConfirmation>().CreateAsync(userConfirmation);
+
+        await _unitOfWork.SaveChangesAsync();
+
+        #endregion
+
+        #region SendEmail
+
+        var sendEmailModel = new SendEmailModel
+        {
+            Subject = "Security Code",
+            Body = code,
+            To = new List<string> { request.Email! }
+        };
+
+        var result = await _emailService.SendEmailAsync(sendEmailModel);
+
+        if (!result)
+            throw new ApiException("Login Failed. Email could not send");
+
+        #endregion
+
+        return userConfirmation.Secret;
     }
 
     public async Task<UserResponseVM> UpdateAsync(UpdateUserRequestVM request)

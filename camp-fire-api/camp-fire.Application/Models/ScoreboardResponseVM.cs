@@ -7,11 +7,24 @@ public class ScoreboardResponseVM
     public int PageId { get; set; }
     public int UserId { get; set; }
     public int Score { get; set; }
-    // public User User { get; set; }
-    // public Scoreboard Scoreboard { get; set; }
-    // public Page Page { get; set; }
+}
+public class ScoreboardsByEventIdResponseVM
+{
+    public int PageId { get; set; }
+    public int UserId { get; set; }
+    public int TotalScore { get; set; }
 }
 
 public class UpdateScoreboardRequestVM : ScoreboardResponseVM
 {
+}
+
+
+public class CreateScoreboardRequestVM : ScoreboardResponseVM
+{
+}
+
+public class GetScoreboardRequestVM
+{
+    public int EventId { get; set; }
 }

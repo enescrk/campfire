@@ -24,7 +24,7 @@ public class CampFireDBContext : DbContext, IDisposable, ICampFireDBContext
     {
         builder.ApplyConfiguration(new AddressEntityTypeConfiguration());
         builder.ApplyConfiguration(new UserEntityTypeConfiguration());
-        builder.ApplyConfiguration(new PageEntityTypeConfiguration());
+        // builder.ApplyConfiguration(new PageEntityTypeConfiguration());
 
         base.OnModelCreating(builder);
     }

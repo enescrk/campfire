@@ -41,8 +41,21 @@ public class ChangeTurnRequestVM
 
 public class UpdatePageRequestVM
 {
-    public int EventId { get; set; }
+    public int Id { get; set; }
     public int PageId { get; set; }
+}
+
+public class UpdateCurrentUserRequestVM
+{
+    public int Id { get; set; }
+    public int UserId { get; set; }
+}
+
+public class ActivateUserRequestVM
+{
+    public int Id { get; set; }
+    public string Email { get; set; }
+    public bool IsActive { get; set; }
 }
 
 public class UpdateActiveUserRequestVM

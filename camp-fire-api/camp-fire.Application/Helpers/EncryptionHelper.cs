@@ -16,7 +16,7 @@ public static class EncryptionHelper
         return Convert.ToBase64String(byteEncryptSha1);
     }
 
-    private static string EncryptionKey => "HilfeOhneGrenzen2021";
+    private static string EncryptionKey => "Campfire2023";
 
     public static string? Encrypt(this string clearText)
     {

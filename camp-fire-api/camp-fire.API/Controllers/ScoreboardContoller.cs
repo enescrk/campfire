@@ -39,9 +39,17 @@ public class ScoreboardController : BaseApiController
         return Ok(new BaseApiResult { Data = result });
     }
 
+    [HttpGet]
+    [AllowAnonymous]
+    public async Task<IActionResult> Get(GetScoreboardRequestVM request)
+    {
+        var result = await _scoreboardService.GetByEventIdAsync(request);
+        return Ok(new BaseApiResult { Data = result });
+    }
+
     [HttpPost]
     [AllowAnonymous]
-    public async Task<IActionResult> Post([FromBody] Scoreboard request)
+    public async Task<IActionResult> Post([FromBody] CreateScoreboardRequestVM request)
     {
         var result = await _scoreboardService.CreateAsync(request);
         return Ok(result);

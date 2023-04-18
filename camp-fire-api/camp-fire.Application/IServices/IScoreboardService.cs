@@ -5,7 +5,8 @@ namespace camp_fire.Application.IServices;
 
 public interface IScoreboardService
 {
-    Task<int> CreateAsync(Scoreboard request);
     Task<ScoreboardResponseVM> UpdateAsync(UpdateScoreboardRequestVM request);
+    Task<ScoreboardResponseVM> CreateAsync(CreateScoreboardRequestVM request);
+    Task<List<ScoreboardsByEventIdResponseVM>?> GetByEventIdAsync(GetScoreboardRequestVM request);
     Task<ScoreboardResponseVM?> GetAsync(int id);
 }

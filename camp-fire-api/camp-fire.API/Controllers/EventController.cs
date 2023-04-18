@@ -4,7 +4,7 @@ using camp_fire.API.Models;
 using camp_fire.Application.IServices;
 using camp_fire.Application.Models;
 using camp_fire.Application.Models.Request;
-using camp_fire.Domain.Entities;
+using camp_fire.Application.Token;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -81,6 +81,10 @@ public class EventController : BaseApiController
     public async Task<IActionResult> ChangeTurn()
     {
         //TODO: Parametre olarak eventId alacak çünkü isteği atan tokendan user'ı bulacağız. tek bir aktif eventi olabilecekse parametresiz istek atması yeterli olacak
+        var loggedInUser = TokenProvider.GetLoggedInUser(User);
+
+        
+
         return Ok();
     }
 
@@ -102,25 +106,15 @@ public class EventController : BaseApiController
     }
 
     ///summary
-    // oyuna o an katılan kullanıcıları güncelleme işlemi
-    [HttpPut("checkActiveUser")]
+    // oyuna o an katılan kullanıcıları güncelleme işlemi - admin tarafından çıkarılırsa isActive false olarak gönderilebilir
+    [HttpPut("activate")]
     [AllowAnonymous]
-    public async Task<IActionResult> CheckActiveUser(int eventId, string mail, bool isActive)
+    public async Task<IActionResult> Activate([FromQuery] ActivateUserRequestVM request)
     {
-        //event i çek
-        //user listesindeki user'ı bul ve IsAvtive'i güncelle
-        //modeli dön
-        var eventt = await _eventService.GetAsync(eventId);
+        //*campfire.com/event/activate?email=mirac.kilic61@gmail.com&eventId=3&isActive=true
+        var resultEvent = await _eventService.UpdateActiveUserAsync(request);
 
-        if (eventt is null)
-            throw new ApplicationException("There is no event with that Id!");
-
-        var user = eventt.Users.FirstOrDefault(x => x.EMail == mail);
-
-        if (user is not null)
-            user.IsActive = isActive;
-
-        var eventHubModel = MapEventHubModelHelper(eventt);
+        var eventHubModel = MapEventHubModelHelper(resultEvent!);
 
         await _eventHub.Clients.All.SendAsync("GetEvent", eventHubModel);
 

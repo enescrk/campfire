@@ -11,4 +11,5 @@ public interface IEventService : IBaseService
     Task<EventResponseVM?> GetAsync(int id);
     Task<List<EventResponseVM>?> GetAsync(GetEventsRequestVM request);
     Task<EventResponseVM> UpdateCurrentPageAsync(UpdatePageRequestVM request);
+    Task<EventResponseVM> UpdateActiveUserAsync(ActivateUserRequestVM request);
 }

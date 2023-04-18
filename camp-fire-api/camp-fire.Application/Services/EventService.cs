@@ -116,20 +116,6 @@ public class EventService : IEventService
 
         foreach (var user in participiantUsers)
         {
-            foreach (var page in newPages)
-            {
-                var scoreboard = new Scoreboard
-                {
-                    Event = newEvent,
-                    CreatedBy = 3,
-                    Score = 0,
-                    User = user,
-                    Page = page
-                };
-
-                newScorboards.Add(scoreboard);
-            }
-
             var eventParticipant = new EventParticipant
             {
                 Event = newEvent,
@@ -139,7 +125,7 @@ public class EventService : IEventService
             newEvetParticipiants.Add(eventParticipant);
         }
 
-        await _unitOfWork.GetRepository<Scoreboard>().BulkCreateAsync(newScorboards);
+        // await _unitOfWork.GetRepository<Scoreboard>().BulkCreateAsync(newScorboards);
         await _unitOfWork.GetRepository<EventParticipant>().BulkCreateAsync(newEvetParticipiants);
 
         #endregion
@@ -147,7 +133,7 @@ public class EventService : IEventService
         await _emailService.SendEmailAsync(new SendEmailModel
         {
             Subject = "Online Kamp Daveti",
-            Body = $"Arkadaşın seni eğlenceli oyunları içeren online bir etkinliğe davet etti!. Etkinliğe zamanı geldiğinde aşağıdaki linkten ulaşabilirsin. Başlangıç tarihi: {request.Date.Date}",
+            Body = $"Arkadaşın seni eğlenceli oyunları içeren online bir etkinliğe davet etti!. Etkinliğe zamanı geldiğinde aşağıdaki linkten ulaşabilirsin. \n Başlangıç tarihi: {request.Date.Date} \n",
             To = requestedEmails
         });
 
@@ -182,7 +168,7 @@ public class EventService : IEventService
 
     public async Task<EventResponseVM> UpdateCurrentPageAsync(UpdatePageRequestVM request)
     {
-        var eventt = await _unitOfWork.GetRepository<Event>().GetByIdAsync(request.EventId);
+        var eventt = await _unitOfWork.GetRepository<Event>().GetByIdAsync(request.Id);
 
         if (eventt is null)
             throw new NullReferenceException("Event couldn't find");
@@ -196,6 +182,9 @@ public class EventService : IEventService
 
         eventt.CurrentPageId = eventt!.Pages!.FirstOrDefault(x => !x.IsCompleted)!.Id;
 
+        if (eventt.CurrentPageId is null)
+            throw new Exception("Event is ended");
+
         _unitOfWork.GetRepository<Page>().Update(page);
         _unitOfWork.GetRepository<Event>().Update(eventt);
 
@@ -206,34 +195,68 @@ public class EventService : IEventService
         return mappedEvent;
     }
 
-    // public async Task<EventResponseVM> UpdateActiveUserAsync(UpdateActiveUserRequestVM request)
-    // {
-    //     //* Event tablosuna users ilişkisi eklenip onun üzerinden güncellenebilir.
-    //     var eventt = await GetAsync(request.EventId);
+    public async Task<EventResponseVM> UpdateCurrentUserAsync(UpdateCurrentUserRequestVM request)
+    {
+        var eventt = await _unitOfWork.GetRepository<Event>().GetByIdAsync(request.Id);
 
-    //     if (eventt is null || eventt.ParticipiantIds is null)
-    //         throw new NullReferenceException("Event couldn't find or Event does not have any Participiant");
+        if (eventt is null)
+            throw new NullReferenceException("Event couldn't find");
 
-    //     if (!eventt.ParticipiantIds.Any(x => x == request.UserId))
-    //         throw new ApplicationException("Event does not contains this participiant");
+        if (eventt.Date.Date <= DateTime.Now || eventt.IsCompleted) //* şu anki tarih eventin tarihinden önceyse veya event bitmişse hata fırlat.
+            throw new Exception("Event is not playable!");
 
-    //     var user = await _unitOfWork.GetRepository<User>().GetByIdAsync(request.UserId);
+        var user = _unitOfWork.GetRepository<User>().FindOne(x => x.Id == request.UserId);
 
-    //     user.IsActive = true;
+        if (user is null)
+            throw new NullReferenceException("Event couldn't find!");
 
-    //     eventt.users
+        if (!eventt.EventParticipants.Any(x => x.UserId == user.Id))
+            throw new NullReferenceException("User is not participiant of this Event!");
 
-    //     eventt.CurrentUserId = eventt!.Pages!.FirstOrDefault(x => !x.IsCompleted)!.Id;
+        // eventt.CurrentUserId =eventt.u//TODO:scoreboard listesindeki kayıtlara göre yapılabilir.
+        //* Oynanacak el sayısı event oluştururken belirlenebilir olacak. Scoreboard tablosunda ve Pagetablosunda kayıt tutulacak.
+        // scoreboard tablosunda oyuncnunu kaç el oynadığı tutulacak her el güncellenecek.
 
-    //     _unitOfWork.GetRepository<Page>().Update(page);
-    //     _unitOfWork.GetRepository<Event>().Update(eventt);
+        _unitOfWork.GetRepository<Event>().Update(eventt);
 
-    //     await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync();
 
-    //     var mappedEvent = MapEventResposeVMHelper(eventt);
+        var mappedEvent = MapEventResposeVMHelper(eventt);
 
-    //     return mappedEvent;
-    // }
+        return mappedEvent;
+    }
+
+    public async Task<EventResponseVM> UpdateActiveUserAsync(ActivateUserRequestVM request)
+    {
+        var eventt = await _unitOfWork.GetRepository<Event>().GetByIdAsync(request.Id);
+
+        if (eventt is null)
+            throw new NullReferenceException("Event couldn't find");
+
+        if (eventt.Date.Date <= DateTime.Now || eventt.IsCompleted) //* şu anki tarih eventin tarihinden önceyse veya event bitmişse hata fırlat.
+            throw new Exception("Event is not playable!");
+
+        var user = _unitOfWork.GetRepository<User>().FindOne(x => x.EMail == request.Email.ToLower().Trim());
+
+        if (user is null)
+            throw new NullReferenceException("Event couldn't find!");
+
+        if (!eventt.EventParticipants.Any(x => x.UserId == user.Id))
+            throw new NullReferenceException("User is not participiant of this Event!");
+
+        var updateUser = eventt.EventParticipants.FirstOrDefault(x => x.UserId == user.Id)!.User;
+
+        updateUser.IsActive = request.IsActive;
+
+        _unitOfWork.GetRepository<User>().Update(updateUser);
+        _unitOfWork.GetRepository<Event>().Update(eventt);
+
+        await _unitOfWork.SaveChangesAsync();
+
+        var mappedEvent = MapEventResposeVMHelper(eventt);
+
+        return mappedEvent;
+    }
 
     public async Task<EventResponseVM?> GetAsync(int id)
     {

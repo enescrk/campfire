@@ -130,6 +130,8 @@ public class EventService : IEventService
 
         #endregion
 
+        //TODO:Emai'e login sayfasının url'i + eventId gidecek.
+        //*Login
         await _emailService.SendEmailAsync(new SendEmailModel
         {
             Subject = "Online Kamp Daveti",

@@ -19,6 +19,7 @@ public class CampFireDBContext : DbContext, IDisposable, ICampFireDBContext
     public DbSet<User> Users { get; set; }
     public DbSet<UserConfirmation> UserConfirmations { get; set; }
     public DbSet<Game> Games { get; set; }
+    public DbSet<Content> Contents { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

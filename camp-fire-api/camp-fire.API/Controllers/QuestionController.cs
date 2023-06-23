@@ -21,7 +21,7 @@ public class QuestionController : BaseApiController
         _questionService = questionService;
     }
 
-     [HttpGet("{id}")]
+    [HttpGet("{id}")]
     [AllowAnonymous]
     public async Task<IActionResult> Get(int id)
     {

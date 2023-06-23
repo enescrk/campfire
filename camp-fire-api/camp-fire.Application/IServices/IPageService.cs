@@ -10,4 +10,5 @@ public interface IPageService : IBaseService
     Task<List<PageResponseVM>> GetAsync(GetPagesRequestVM request);
     Task<PageResponseVM?> GetByIdAsync(int id);
     Task UpdateIsCompleteAsync(UpdatePageIsCompleteRequestVM request);
+    // Task<PageResponseVM?> GetByIdAsync(int id);
 }

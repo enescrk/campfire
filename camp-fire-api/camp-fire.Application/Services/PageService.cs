@@ -79,28 +79,32 @@ public class PageService : IPageService
         return await Task.FromResult(pages);
     }
 
-    public async Task<PageResponseVM?> GetByIdAsync(int id)
+    public Task<PageResponseVM?> GetByIdAsync(int id)
     {
-        var page = _unitOfWork.GetRepository<Page>().FindOne(x => x.Id == id);
-
-        if (page is null)
-            throw new ApiException("page couldn't find ");
-
-        var result = new PageResponseVM
-        {
-            Id = page.Id,
-            Name = page!.Name!,
-            EventId = page.EventId,
-            EventName = page.Event?.Name,
-            ScoreboardId = page.Scoreboard?.Id,
-            IsCompleted = page.IsCompleted
-        };
-
-        return await Task.FromResult(result);
+        throw new NotImplementedException();
     }
 
-    public async Task SaveChangesAsync()
+    public Task SaveChangesAsync()
     {
-        await _unitOfWork.SaveChangesAsync();
+        throw new NotImplementedException();
     }
+
+    // public async Task<PageResponseVM?> GetByIdAsync(int id)
+    // {
+    //     var page = _unitOfWork.GetRepository<Page>().FindOne(x => x.Id == id);
+
+    //     if (page is null)
+    //         throw new ApiException("page couldn't find ");
+
+    //     var result = new PageResponseVM
+    //     {
+    //         Id = page.Id,
+    //         Name = page!.Name!,
+    //         EventId = page.EventId,
+    //         EventName = page.Event?.Name,
+    //         ScoreboardId = page.Scoreboard?.Id
+    //     };
+
+    //     return await Task.FromResult(result);
+    // }
 }

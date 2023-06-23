@@ -12,6 +12,7 @@ public class EventResponseVM
     public List<int>? ParticipiantIds { get; set; }
     public int? CurrentPageId { get; set; }
     public int? CurrentUserId { get; set; }
+    public string? EventData { get; set; }
     public List<PageResponseVM> Pages { get; set; }
     public List<UserResponseVM> Users { get; set; }
 }
@@ -27,6 +28,7 @@ public class UpdateEventRequestVM
     public List<int> GameIds { get; set; }
     public string? MeetingUrl { get; set; }
     public int? CurrentPageId { get; set; }
+    public string? EventData { get; internal set; }
 }
 
 public class CreateEventReqeustVM : UpdateEventRequestVM

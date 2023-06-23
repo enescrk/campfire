@@ -14,7 +14,7 @@ namespace camp_fire.API.Controllers;
 //TODO: Event'i bitirme servisi - event ve user içindeki oyunlarla ilgili alanlar güncellenecek.
 
 [Route("[controller]")]
-public class EventController : BaseApiController
+public class EventController : BaseApiController      
 {
     private readonly ILogger<EventController> _logger;
     private readonly IEventService _eventService;

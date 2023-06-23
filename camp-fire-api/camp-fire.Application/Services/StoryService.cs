@@ -23,7 +23,7 @@ public class StoryService : IStoryService
 
         .Select(x => new StoryResponseVM
         {
-            Id=x.Id,
+            Id = x.Id,
             Text = x.Text,
             Type = x.Type
         }).ToList();
@@ -83,6 +83,16 @@ public class StoryService : IStoryService
             throw new ApiException("story couldn't find");
 
         _unitOfWork.GetRepository<Story>().Delete(story);
+    }
+
+    public List<StoryResponseVM>? Getll()
+    {
+        return _unitOfWork.GetRepository<Story>().GetAll().Select(x => new StoryResponseVM
+        {
+            Title = x.Title,
+            Text = x.Text,
+            Type = x.Type,
+        }).ToList();
     }
 
     #region Helpers 

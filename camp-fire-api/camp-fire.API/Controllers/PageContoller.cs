@@ -21,11 +21,12 @@ public class PageController : BaseApiController
         _pageService = pageService;
     }
 
-    [HttpGet("{id}")]
+    [HttpGet]
     [AllowAnonymous]
-    public async Task<IActionResult> Get(int id)
+    public async Task<IActionResult> Get(GetPagesRequestVM requestVM)
     {
-        var result = await _pageService.GetByIdAsync(id);
+        var result = await _pageService.GetAsync(requestVM);
+        
         return Ok(new BaseApiResult { Data = result });
     }
 

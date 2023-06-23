@@ -156,6 +156,7 @@ public class EventService : IEventService
         eventt.ParticipiantIds = request.ParticipiantIds;
         eventt.PageIds = request.GameIds.ToArray(); //TODO: düzenlenecek.
         eventt.CompanyId = request.CompanyId;
+        eventt.EventData = request.EventData;
 
         _unitOfWork.GetRepository<Event>().Update(eventt);
 
@@ -289,6 +290,7 @@ public class EventService : IEventService
             HashedKey = eventt.HashedKey,
             Name = eventt.Name,
             Date = eventt.Date,
+            EventData = eventt.EventData,
             User = new UserResponseVM
             {
                 Id = eventt.UserId,

@@ -15,6 +15,7 @@ public class Event : BaseEntity
     public int? CurrentPageId { get; set; } //şu an ekranda görünmesi gereken oyun
     public int? CurrentUserId { get; set; } //şu an oynaması gereken oyuncu
     public bool IsCompleted { get; set; }
+    public string? EventData { get; set; }
 
     public virtual User? User { get; set; }
     public virtual ICollection<Page> Pages { get; set; }

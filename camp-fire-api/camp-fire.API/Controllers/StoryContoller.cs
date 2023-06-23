@@ -29,6 +29,14 @@ public class StoryController : BaseApiController
         return Ok(new BaseApiResult { Data = result });
     }
 
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult GetAll(int id)
+    {
+        var result = _storyService.Getll();
+        return Ok(new BaseApiResult { Data = result });
+    }
+
     [HttpPost]
     [AllowAnonymous]
     public async Task<IActionResult> Post([FromBody] CreateStoryRequestVM request)

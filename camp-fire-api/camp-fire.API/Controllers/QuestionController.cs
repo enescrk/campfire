@@ -29,6 +29,14 @@ public class QuestionController : BaseApiController
         return Ok(new BaseApiResult { Data = result });
     }
 
+    // [HttpGet("{id}")]
+    // [AllowAnonymous]
+    // public async Task<IActionResult> Get(int id)
+    // {
+    //     var result = await _questionService.GetByIdAsync(id);
+    //     return Ok(new BaseApiResult { Data = result });
+    // }
+
     [HttpPost]
     [AllowAnonymous]
     public async Task<IActionResult> Post([FromBody] CreateQuestionRequestVM request)

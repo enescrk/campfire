@@ -88,8 +88,8 @@ public class UserService : IUserService
             user = new User
             {
                 EMail = request.Email.Trim(),
-                Name = request.Name.Trim(),
-                Surname = request.Surname.Trim()
+                Name = request.Name?.Trim(),
+                Surname = request.Surname?.Trim()
             };
 
             await _unitOfWork.GetRepository<User>().CreateAsync(user);

@@ -8,5 +8,6 @@ public interface IQuestionService
     Task<int> CreateAsync(CreateQuestionRequestVM request);
     Task<QuestionResponseVM> UpdateAsync(UpdateQuestionRequestVM request);
     Task<QuestionResponseVM?> GetByIdAsync(int id);
+    QuestionResponseVM? GetByRandomAsync();
 }
 

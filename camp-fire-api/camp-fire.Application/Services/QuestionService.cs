@@ -23,7 +23,7 @@ public class QuestionService : IQuestionService
 
         .Select(x => new QuestionResponseVM
         {
-            Id=x.Id,
+            Id = x.Id,
             Text = x.Text,
             Type = x.Type
         }).ToList();
@@ -38,6 +38,20 @@ public class QuestionService : IQuestionService
             throw new ApiException("Question couldn't find ");
 
         var mappedQuestion = MapQuestionResposeVMHelper(question);
+
+        return mappedQuestion;
+    }
+
+    public QuestionResponseVM? GetByRandomAsync()
+    {
+        var questions = _unitOfWork.GetRepository<Question>().GetAll();
+
+        Random rand = new Random();
+        int toSkip = rand.Next(0, questions.Count());
+
+        var question = questions.Skip(toSkip).Take(1).First();
+
+        var mappedQuestion = MapQuestionResposeVMHelper(question!);
 
         return mappedQuestion;
     }

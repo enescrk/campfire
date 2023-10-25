@@ -263,61 +263,69 @@ public class EventService : IEventService
 
     public async Task<EventResponseVM?> GetAsync(int id)
     {
-        List<UserResponseVM>? users = null;
-
-        var eventt = _unitOfWork.GetRepository<Event>().FindOne(x => x.Id == id);
-
-        if (eventt.ParticipiantIds is not null)
+        try
         {
-            users = new List<UserResponseVM>();
-            users = _unitOfWork.GetRepository<User>().Find(x => eventt.ParticipiantIds.Contains(x.Id)).
-            Select(x => new UserResponseVM
+            List<UserResponseVM>? users = null;
+
+            var eventt = _unitOfWork.GetRepository<Event>().FindOne(x => x.Id == id);
+
+            if (eventt.ParticipiantIds is not null)
             {
-                Id = x.Id,
-                EMail = x.EMail,
-                IsActive = x.IsActive,
-                Name = x.Name,
-                Surname = x.Surname,
-                Gender = x.Gender,
-                PhoneNumber = x.PhoneNumber,
-                UserType = x.UserType
-            }).ToList();
+                users = new List<UserResponseVM>();
+                users = _unitOfWork.GetRepository<User>().Find(x => eventt.ParticipiantIds.Contains(x.Id)).Select(x =>
+                    new UserResponseVM
+                    {
+                        Id = x.Id,
+                        EMail = x.EMail,
+                        IsActive = x.IsActive,
+                        Name = x.Name,
+                        Surname = x.Surname,
+                        Gender = x.Gender,
+                        PhoneNumber = x.PhoneNumber,
+                        UserType = x.UserType
+                    }).ToList();
+            }
+
+            var result = new EventResponseVM
+            {
+                Id = eventt.Id,
+                HashedKey = eventt.HashedKey,
+                Name = eventt.Name,
+                Date = eventt.Date,
+                EventData = eventt.EventData,
+                User = new UserResponseVM
+                {
+                    Id = eventt.UserId,
+                    Name = eventt.User?.Name,
+                    Surname = eventt.User?.Surname
+                },
+                Users = users,
+                ParticipiantIds = eventt.ParticipiantIds?.ToList(),
+                PageIds = eventt.Pages?.Select(x => x.Id).ToList(),
+                Pages = eventt.Pages?.Select(x => new PageResponseVM
+                {
+                    Id = x.Id,
+                    IsCompleted = x.IsCompleted,
+                    Name = x.Name,
+                    ScoreboardId = x.Scoreboard?.Id
+                }).ToList(),
+                Scoreboards = eventt.Scoreboards?.Select(x => new ScoreboardResponseVM
+                {
+                    Id = x.Id,
+                    EventId = x.EventId,
+                    PageId = x.PageId,
+                    UserId = x.UserId,
+                    Score = x.Score
+                }).ToList()
+            };
+
+            return await Task.FromResult(result);
         }
-
-        var result = new EventResponseVM
+        catch (Exception e)
         {
-            Id = eventt.Id,
-            HashedKey = eventt.HashedKey,
-            Name = eventt.Name,
-            Date = eventt.Date,
-            EventData = eventt.EventData,
-            User = new UserResponseVM
-            {
-                Id = eventt.UserId,
-                Name = eventt.User?.Name,
-                Surname = eventt.User?.Surname
-            },
-            Users = users,
-            ParticipiantIds = eventt.ParticipiantIds?.ToList(),
-            PageIds = eventt.Pages?.Select(x => x.Id).ToList(),
-            Pages = eventt.Pages?.Select(x => new PageResponseVM
-            {
-                Id = x.Id,
-                IsCompleted = x.IsCompleted,
-                Name = x.Name,
-                ScoreboardId = x.Scoreboard?.Id
-            }).ToList(),
-            Scoreboards = eventt.Scoreboards?.Select(x => new ScoreboardResponseVM
-            {
-                Id = x.Id,
-                EventId = x.EventId,
-                PageId = x.PageId,
-                UserId = x.UserId,
-                Score = x.Score
-            }).ToList()
-        };
-
-        return await Task.FromResult(result);
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
     public async Task<List<EventResponseVM>?> GetAsync(GetEventsRequestVM request)

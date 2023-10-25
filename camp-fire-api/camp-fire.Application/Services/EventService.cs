@@ -323,16 +323,16 @@ public class EventService : IEventService
     public async Task<List<EventResponseVM>?> GetAsync(GetEventsRequestVM request)
     {
         var eventList = _unitOfWork.GetRepository<Event>().Find(x => !x.IsDeleted
-        && request.Id == null || x.Id == request.Id
-        && request.Date == null || x.Date == request.Date
-        && request.UserId == null || x.UserId == request.UserId
-        && request.CurrentUserId == null || x.CurrentUserId == request.CurrentUserId
-        && request.CurrentPageId == null || x.CurrentPageId == request.CurrentPageId
-        && request.CompanyId == null || x.CompanyId == request.CompanyId
-        && request.ParticipiantId == null || (x.ParticipiantIds != null && x.ParticipiantIds.Contains(request.ParticipiantId!.Value))
-        && string.IsNullOrEmpty(request.Name) || x.Name == request.Name!.ToLower().Trim()
-        && string.IsNullOrEmpty(request.HashedKey) || x.HashedKey == request.HashedKey!.ToLower().Trim()
-        && string.IsNullOrEmpty(request.MeetingUrl) || x.MeetingUrl == request.MeetingUrl!.ToLower().Trim())
+        && (request.Id == null || x.Id == request.Id)
+        && (request.Date == null || x.Date == request.Date)
+        && (request.UserId == null || x.UserId == request.UserId)
+        && (request.CurrentUserId == null || x.CurrentUserId == request.CurrentUserId)
+        && (request.CurrentPageId == null || x.CurrentPageId == request.CurrentPageId)
+        && (request.CompanyId == null || x.CompanyId == request.CompanyId)
+        && (request.ParticipiantId == null || (x.ParticipiantIds != null && x.ParticipiantIds.Contains(request.ParticipiantId!.Value)))
+        && (string.IsNullOrEmpty(request.Name) || x.Name == request.Name!.ToLower().Trim())
+        && (string.IsNullOrEmpty(request.HashedKey) || x.HashedKey == request.HashedKey!.ToLower().Trim())
+        && (string.IsNullOrEmpty(request.MeetingUrl) || x.MeetingUrl == request.MeetingUrl!.ToLower().Trim()))
         .Select(x => new EventResponseVM
         {
             Id = x.Id,

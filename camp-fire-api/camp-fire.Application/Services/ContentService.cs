@@ -7,7 +7,7 @@ using camp_fire.Domain.SeedWork.Exceptions;
 namespace camp_fire.Application.Services;
 
 public class ContentService : IContentService
-{
+{ 
     private readonly IUnitOfWork _unitOfWork;
 
     public ContentService(IUnitOfWork unitOfWork)

@@ -46,7 +46,7 @@ public class EventController : BaseApiController
 
     [HttpGet]
     [AllowAnonymous]
-    public async Task<IActionResult> Get(GetEventsRequestVM request)
+    public async Task<IActionResult> Get([FromQuery] GetEventsRequestVM request)
     {
         var result = await _eventService.GetAsync(request);
         return Ok(new BaseApiResult { Data = result });

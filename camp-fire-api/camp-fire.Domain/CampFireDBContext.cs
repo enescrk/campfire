@@ -9,6 +9,7 @@ public class CampFireDBContext : DbContext, IDisposable, ICampFireDBContext
     public CampFireDBContext(DbContextOptions<CampFireDBContext> dbContextOptions) : base(options: dbContextOptions) { }
 
     public DbSet<Address> Addresses { get; set; }
+    public DbSet<Experience> Experiences { get; set; }
     public DbSet<Country> Countries { get; set; }
     public DbSet<Event> Events { get; set; }
     public DbSet<EventLog> EventLogs { get; set; }

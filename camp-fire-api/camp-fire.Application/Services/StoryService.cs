@@ -14,6 +14,7 @@ public class StoryService : IStoryService
     {
         _unitOfWork = unitOfWork;
     }
+    
     public async Task<List<StoryResponseVM>> GetAsync(GetStorysRequestVM request)
     {
         var stories = _unitOfWork.GetRepository<Story>().Find(x =>

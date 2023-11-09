@@ -7,6 +7,7 @@ using camp_fire.Domain.SeedWork;
 using camp_fire.Infrastructure.Email;
 using camp_fire.Infrastructure.Settings;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,7 @@ builder.Services.AddScoped<IQuestionService, QuestionService>();
 builder.Services.AddScoped<IScoreboardService, ScoreboardService>();
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<IContentService, ContentService>();
+
 
 builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
@@ -49,6 +51,8 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
                                   .AllowAnyHeader()
                                   .AllowCredentials()
                                   .SetIsOriginAllowed(origin => true)));
+
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 

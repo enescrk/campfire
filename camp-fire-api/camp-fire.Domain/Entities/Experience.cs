@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using camp_fire.Domain.Entities.Base;
 
 namespace camp_fire.Domain.Entities;

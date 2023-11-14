@@ -27,6 +27,7 @@ builder.Services.AddScoped<IQuestionService, QuestionService>();
 builder.Services.AddScoped<IScoreboardService, ScoreboardService>();
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<IContentService, ContentService>();
+builder.Services.AddScoped<IExperienceService, ExperienceService>();
 
 
 builder.Services.AddTransient<IEmailService, EmailService>();
@@ -52,7 +53,7 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
                                   .AllowCredentials()
                                   .SetIsOriginAllowed(origin => true)));
 
-builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
 

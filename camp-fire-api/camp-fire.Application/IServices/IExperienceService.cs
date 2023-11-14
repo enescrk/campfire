@@ -6,6 +6,7 @@ public interface IExperienceService
 {
     Task<int> CreateAsync(CreateExperienceRequest request);
     Task<ExperienceResponse> UpdateAsync(UpdateExperienceRequest request);
-    // Task<StoryResponseVM?> GetByIdAsync(int id);
+    Task<ExperienceResponse?> GetByIdAsync(int id);
     Task<List<ExperienceResponse>>? GetllAsync(GetExperienceRequest request);
+    Task DeleteAsync(int id);
 }

@@ -7,8 +7,12 @@ public class MappingProfile : Profile
     public MappingProfile()
     {
         CreateMap<Experience, ExperienceResponse>()
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id)) // Id özelliği aynı olduğu için doğrudan eşleniyor
-            .ForMember(dest => dest.Box, opt => opt.MapFrom(src => new BoxResponse { Id = src.BoxId.Value })) // Box özelliğini özelleştirilmiş bir şekilde eşle
-            .ForMember(dest => dest.Agendas, opt => opt.MapFrom(src => src.AgendaIds.Select(id => new AgendaResponse { Id = id }))); // AgendaIds özelliğini özelleştirilmiş bir şekilde eşle
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Box, opt => opt.MapFrom(src => new BoxResponse { Id = src.BoxId.Value }))
+            .ForMember(dest => dest.Agendas, opt => opt.MapFrom(src => src.AgendaIds.Select(id => new AgendaResponse { Id = id })));
+
+        CreateMap<CreateExperienceRequest, Experience>();
+
+        CreateMap<UpdateExperienceRequest, Experience>();
     }
 }

@@ -1,0 +1,5 @@
+* Listeler için response içerisine Count eklenecek (BaseApiResult)
+* Loglama eklenecek (serilog)
+* Mapper kısmındaki asenkron işlemler kontrol edilecek
+* Resim path oluşturma/kaydetme eklenecek 
+* Eksik CRUD yapıları oluşturulacak (agenda)

@@ -40,8 +40,8 @@ public class ExperienceController : BaseApiController
     [AllowAnonymous]
     public async Task<IActionResult> Post([FromBody] CreateExperienceRequest request)
     {
-        var result = await _experienceService.CreateAsync(request);
-        return Ok(result);
+        await _experienceService.CreateAsync(request);
+        return Ok();
     }
 
     [HttpPut]

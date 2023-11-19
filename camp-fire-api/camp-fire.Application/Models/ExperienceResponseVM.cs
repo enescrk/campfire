@@ -12,7 +12,7 @@ public class ExperienceResponse
     public string? BannerImage { get; set; }
     public int? Duration { get; set; }
     public string? VideoUrl { get; set; }
-    public BoxResponse? Box { get; set; } //
+    public BoxResponseVM? Box { get; set; } //
     public string? Content { get; set; }
     public List<string>? Images { get; set; }
     public string? Header { get; set; }
@@ -47,7 +47,8 @@ public class CreateExperienceRequest
     public string? BannerImage { get; set; }
     public int? Duration { get; set; }
     public string? VideoUrl { get; set; }
-    public int? BoxID { get; set; } //
+    //public int? BoxID { get; set; } //
+    public CreateBoxRequestVM? Box { get; set; }
     public string? Content { get; set; }
     public List<string>? Images { get; set; }
     public string? Header { get; set; }

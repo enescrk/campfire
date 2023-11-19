@@ -2,6 +2,7 @@ namespace camp_fire.Application.Models;
 
 public class AddressResponseVM
 {
+    public int Id { get; set; }
     public int CountryId { get; set; }
     public int UserId { get; set; }
     public string? City { get; set; }

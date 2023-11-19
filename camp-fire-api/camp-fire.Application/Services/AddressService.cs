@@ -23,6 +23,7 @@ public class AddressService : IAddressService
         )
         .Select(x => new AddressResponseVM
         {
+            Id = x.Id,
             CountryId = x.CountryId,
             UserId = x.UserId,
             City = x.City,
@@ -60,6 +61,7 @@ public class AddressService : IAddressService
 
         return await _unitOfWork.SaveChangesAsync();
     }
+    
 
     public async Task<AddressResponseVM> UpdateAsync(UpdateAddressRequestVM request)
     {

@@ -11,21 +11,28 @@ public class ExperienceService : IExperienceService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IBoxService _boxService;
 
     public ExperienceService(IUnitOfWork unitOfWork,
-                            IMapper mapper)
+                            IMapper mapper, IBoxService boxService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _boxService = boxService;
     }
 
-    public async Task<int> CreateAsync(CreateExperienceRequest request)
+    public async Task CreateAsync(CreateExperienceRequest request)
     {
         var experience = _mapper.Map<CreateExperienceRequest, Experience>(request);
 
+        if (request.Box != null)
+        {
+           experience.BoxId = await _boxService.CreateAsync(request.Box);
+        }
+
         await _unitOfWork.GetRepository<Experience>().CreateAsync(experience);
 
-        return await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync();
     }
 
     public async Task<ExperienceResponse?> GetByIdAsync(int id)
@@ -36,6 +43,11 @@ public class ExperienceService : IExperienceService
             throw new ApiException("experience couldn't find ");
 
         var experienceModel = _mapper.Map<Experience, ExperienceResponse>(experience);
+        
+        if (experience.BoxId != null)
+        {
+            experienceModel.Box = await _boxService.GetByIdAsync(experience.BoxId.Value);
+        }
 
         return experienceModel;
     }

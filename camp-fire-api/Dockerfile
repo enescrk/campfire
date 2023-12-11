@@ -7,7 +7,7 @@ COPY . .
 RUN dotnet restore
 
 # copy everything else and build app
-WORKDIR /source/HilfeOhneGrenzen.API/
+WORKDIR /source/camp-fire.API/
 RUN dotnet publish --no-restore -c Release -o /app
 
 # final stage/image

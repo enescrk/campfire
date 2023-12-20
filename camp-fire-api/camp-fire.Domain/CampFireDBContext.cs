@@ -11,9 +11,9 @@ public class CampFireDBContext : DbContext, IDisposable, ICampFireDBContext
     public DbSet<Address> Addresses { get; set; }
     public DbSet<Experience> Experiences { get; set; }
     public DbSet<Country> Countries { get; set; }
-    public DbSet<Event> Events { get; set; }
-    public DbSet<EventLog> EventLogs { get; set; }
-    public DbSet<Page> Pages { get; set; }
+    // public DbSet<Event> Events { get; set; }
+    // public DbSet<EventLog> EventLogs { get; set; }
+    // public DbSet<Page> Pages { get; set; }
     public DbSet<Question> Questions { get; set; }
     public DbSet<Scoreboard> Scoreboards { get; set; }
     public DbSet<Story> Stories { get; set; }
@@ -22,6 +22,11 @@ public class CampFireDBContext : DbContext, IDisposable, ICampFireDBContext
     public DbSet<Game> Games { get; set; }
     public DbSet<Content> Contents { get; set; }
     public DbSet<Box> Boxes { get; set; }
+    public DbSet<Agenda> Agendas { get; set; }
+    public DbSet<Booking> Bookings { get; set; }
+    public DbSet<Company> Companies { get; set; }
+    public DbSet<EnterpriceLevel> EnterpriceLevels { get; set; }
+    public DbSet<Team> Teams { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder builder)

@@ -35,6 +35,11 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
         return Table.FirstOrDefault(predicate);
     }
 
+    public async Task<T> FindOneAsync(Expression<Func<T, bool>> predicate)
+    {
+        return await Table.FirstOrDefaultAsync(predicate);
+    }
+
     public IQueryable<T> GetAll()
     {
         return Table.Where(x => !x.IsDeleted).AsQueryable();

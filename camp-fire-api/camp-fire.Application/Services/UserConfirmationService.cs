@@ -26,7 +26,7 @@ public class UserConfirmationService : IUserConfirmationService
     {
         #region User check
 
-        var user = _unitOfWork.GetRepository<User>().FindOne(x => x.EMail == request.Email.ToLower().Trim());
+        var user = await _unitOfWork.GetRepository<User>().FindOneAsync(x => x.EMail == request.Email.ToLower().Trim());
 
         if (user is null)
             throw new ApiException("User could not be found");
@@ -35,7 +35,7 @@ public class UserConfirmationService : IUserConfirmationService
 
         #region UserConfirm check
 
-        var userConfirm = _unitOfWork.GetRepository<UserConfirmation>().FindOne(x => x.Key == request.Key && x.Secret == request.Code && x.UserId == user.Id);
+        var userConfirm = _unitOfWork.GetRepository<UserConfirmation>().FindOne(x => x.Key == request.Code && x.Secret == request.Key && x.UserId == user.Id);
 
         if (userConfirm is null)
             throw new ApiException("Key is not true?");

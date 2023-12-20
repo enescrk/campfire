@@ -14,9 +14,16 @@ public class User : BaseEntity
     public UserType UserType { get; set; }
     public string? PhoneNumber { get; set; }
     public bool IsActive { get; set; }
+    // public int? CompanyId { get; set; }
+    // public string CompanyName { get; set; }
+    // public int? TeamId { get; set; }
+    // public string TeamName { get; set; }
+    // public DateTime? BirthDate { get; set; }
+    // public string Image { get; set; }
+    // public int? SubscribtionId { get; set; }
 
-    public virtual ICollection<Event>? Events { get; set; }
-    public virtual ICollection<UserConfirmation>? UserConfirmations { get; set; }
-    public virtual Address? Address { get; set; }
-    public virtual ICollection<EventParticipant> ParticipatedEvents { get; set; }
+    // public virtual ICollection<Event>? Events { get; set; }
+    // public virtual ICollection<UserConfirmation>? UserConfirmations { get; set; }
+    // public virtual Address? Address { get; set; }
+    // public virtual ICollection<EventParticipant> ParticipatedEvents { get; set; }
 }

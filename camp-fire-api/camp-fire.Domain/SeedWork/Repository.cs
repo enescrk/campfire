@@ -71,6 +71,9 @@ public class Repository<T> : IRepository<T> where T : BaseEntity
     {
         foreach (var item in entities)
         {
+            item.CreatedDate = DateTime.UtcNow;
+            item.UpdatedDate = DateTime.UtcNow;
+            item.IsDeleted = false;
             var added = _context.Entry(item);
             added.State = EntityState.Added;
 

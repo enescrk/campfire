@@ -29,6 +29,7 @@ builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<IContentService, ContentService>();
 builder.Services.AddScoped<IExperienceService, ExperienceService>();
 builder.Services.AddScoped<IBoxService, BoxService>();
+builder.Services.AddScoped<IBookingService, BookingService>();
 
 
 builder.Services.AddTransient<IEmailService, EmailService>();

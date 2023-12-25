@@ -28,7 +28,7 @@ public class BoxService : IBoxService
 
         return await Task.FromResult(result);
     }
-    
+
     public async Task<BoxResponseVM?> GetByIdAsync(int id)
     {
         var box = await _unitOfWork.GetRepository<Box>().GetByIdAsync(id);
@@ -36,7 +36,7 @@ public class BoxService : IBoxService
         if (box is null)
             throw new ApiException("Box couldn't find ");
 
-        var mappedBox = _mapper.Map<Box,BoxResponseVM>(box);
+        var mappedBox = _mapper.Map<Box, BoxResponseVM>(box);
 
         return mappedBox;
     }

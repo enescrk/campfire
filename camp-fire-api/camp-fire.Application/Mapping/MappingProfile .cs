@@ -1,5 +1,6 @@
 using AutoMapper;
 using camp_fire.Application.Models;
+using camp_fire.Application.Models.Response;
 using camp_fire.Domain.Entities;
 
 public class MappingProfile : Profile
@@ -16,6 +17,7 @@ public class MappingProfile : Profile
         CreateMap<UpdateExperienceRequest, Experience>();
 
         CreateMap<Box, BoxResponseVM>();
+        CreateMap<Booking, BookingResponse>();
         CreateMap<CreateBoxRequestVM, Box>();
         CreateMap<UpdateBoxRequestVM, Box>();
     }

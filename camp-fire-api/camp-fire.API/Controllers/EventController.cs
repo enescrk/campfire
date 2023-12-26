@@ -14,26 +14,29 @@ namespace camp_fire.API.Controllers;
 //TODO: Event'i bitirme servisi - event ve user içindeki oyunlarla ilgili alanlar güncellenecek.
 
 [Route("[controller]")]
-public class EventController : BaseApiController      
+public class EventController : BaseApiController
 {
     private readonly ILogger<EventController> _logger;
     private readonly IEventService _eventService;
     private readonly IHubContext<EventHub> _eventHub;
     private readonly IUserService _userService;
     private readonly IPageService _pageService;
+    private readonly IGoogleCalendarEventService _googleCalendarEventService;
 
     public EventController(ILogger<EventController> logger,
-                            IEventService eventService,
-                            IHubContext<EventHub> eventHub,
-                            IUserService userService,
-                            IPageService pageService
-                            ) : base(logger)
+        IEventService eventService,
+        IHubContext<EventHub> eventHub,
+        IUserService userService,
+        IPageService pageService,
+        IGoogleCalendarEventService googleCalendarEventService
+    ) : base(logger)
     {
         _logger = logger;
         _eventService = eventService;
         _eventHub = eventHub;
         _userService = userService;
         _pageService = pageService;
+        _googleCalendarEventService = googleCalendarEventService;
     }
 
     [HttpGet("{id}")]
@@ -63,6 +66,14 @@ public class EventController : BaseApiController
         return Ok(result);
     }
 
+    [HttpPost("googleEvent")]
+    [AllowAnonymous]
+    public async Task<IActionResult> CreateGoogleEvent([FromBody] CreateGoogleCalendarEventVM request)
+    {
+        var result = await _googleCalendarEventService.CreateEventAsync(request);
+        return Ok(result);
+    }
+
     [HttpPut]
     [AllowAnonymous]
     public async Task<IActionResult> Put([FromBody] UpdateEventRequestVM request)
@@ -71,7 +82,8 @@ public class EventController : BaseApiController
 
         var eventHubModel = MapEventHubModelHelper(result);
 
-        eventHubModel.ParticipiantUsers = await _userService.GetAsync(new GetUserRequestVM { Ids = eventHubModel.ParticipiantIds });
+        eventHubModel.ParticipiantUsers =
+            await _userService.GetAsync(new GetUserRequestVM { Ids = eventHubModel.ParticipiantIds });
 
         await _eventHub.Clients.All.SendAsync("GetEvent", eventHubModel);
 
@@ -85,7 +97,6 @@ public class EventController : BaseApiController
         //TODO: Parametre olarak eventId alacak çünkü isteği atan tokendan user'ı bulacağız. tek bir aktif eventi olabilecekse parametresiz istek atması yeterli olacak
         var loggedInUser = TokenProvider.GetLoggedInUser(User);
 
-        
 
         return Ok();
     }

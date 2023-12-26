@@ -30,7 +30,8 @@ builder.Services.AddScoped<IContentService, ContentService>();
 builder.Services.AddScoped<IExperienceService, ExperienceService>();
 builder.Services.AddScoped<IBoxService, BoxService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
-
+builder.Services.AddScoped<IGoogleCalendarEventService, GoogleCalendarEventService>();
+builder.Services.Configure<GoogleCalendarApiSettings>(builder.Configuration.GetSection("GoogleCalendarApi"));
 
 builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
@@ -38,22 +39,19 @@ builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Emai
 
 var foo = builder.Configuration.GetConnectionString(nameof(CampFireDBContext));
 builder.Services.AddEntityFrameworkNpgsql().AddDbContext<CampFireDBContext>((optionBuilder) =>
-optionBuilder.UseNpgsql(builder.Configuration.GetConnectionString(nameof(CampFireDBContext))));
+    optionBuilder.UseNpgsql(builder.Configuration.GetConnectionString(nameof(CampFireDBContext))));
 
 builder.Services.AddControllersWithViews()
-                .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+    .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSignalR(e =>
-{
-    e.MaximumReceiveMessageSize = 102400000;
-});
+builder.Services.AddSignalR(e => { e.MaximumReceiveMessageSize = 102400000; });
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
-                            policy.AllowAnyMethod()
-                                  .AllowAnyHeader()
-                                  .AllowCredentials()
-                                  .SetIsOriginAllowed(origin => true)));
+    policy.AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials()
+        .SetIsOriginAllowed(origin => true)));
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 

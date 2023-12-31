@@ -98,6 +98,31 @@ public class BookingService : IBookingService
         return await _unitOfWork.SaveChangesAsync();
     }
 
+    public async Task<List<BookingResponse>> GetAsync(GetBookingsRequest request)
+    {
+        var bookingList = _unitOfWork.GetRepository<Booking>().Find(x => !x.IsDeleted
+              && (request.Id == null || x.Id == request.Id)
+              && (request.ExperienceId == null || x.ExperienceId == request.ExperienceId)
+              && (request.CompanyId == null || x.CompanyId == request.CompanyId)
+              && (request.OwnerId == null || x.OwnerId == request.OwnerId)
+              && (request.ModeratorId == null || x.ModeratorId == request.ModeratorId)
+              && (request.UserIds == null || x.UserIds.Any(y => request.UserIds.Contains(y)))
+              && (request.StartDate == null || x.Date.Date >= request.StartDate.Value.Date)
+              && (request.EndDate == null || x.Date.Date <= request.EndDate.Value.Date))
+              .Select(x => new BookingResponse
+              {
+                  Id = x.Id,
+                  Date = x.Date,
+                  CreatedDate = x.CreatedDate,
+                  ExperienceId = x.ExperienceId
+              }).ToList();
+
+        var experienceIds = bookingList.Select(x => x.ExperienceId).ToList();
+        var experiences  = _unitOfWork.GetRepository<Experience>().Find(x => !x.IsDeleted && experienceIds.Contains(x.Id)).ToList();
+
+        return await Task.FromResult(bookingList);
+    }
+
     public async Task<BookingResponse> GetByIdAsync(int id)
     {
         var booking = await _unitOfWork.GetRepository<Booking>().GetByIdAsync(id);

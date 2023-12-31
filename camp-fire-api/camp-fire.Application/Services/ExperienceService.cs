@@ -1,4 +1,5 @@
 using AutoMapper;
+using camp_fire.Application.Helpers;
 using camp_fire.Application.IServices;
 using camp_fire.Application.Models;
 using camp_fire.Domain.Entities;
@@ -27,8 +28,35 @@ public class ExperienceService : IExperienceService
 
         if (request.Box != null)
         {
-           experience.BoxId = await _boxService.CreateAsync(request.Box);
+            experience.BoxId = await _boxService.CreateAsync(request.Box);
         }
+
+        List<string> images = null!;
+
+        var imageHelper = new ImageHelper();
+
+        if (request.Images != null && request.Images.Any())
+        {
+            images = new List<string>();
+
+            foreach (var item in request.Images)
+            {
+                var image = imageHelper.SaveImage("experiences/images", item);
+                images!.Add(image);
+            }
+        }
+
+        string mainImage = null!;
+        if (!string.IsNullOrEmpty(request.Image))
+            mainImage = imageHelper.SaveImage("experiences/images", request.Image);
+
+        string bannerImage = null!;
+        if (!string.IsNullOrEmpty(request.BannerImage))
+            mainImage = imageHelper.SaveImage("experiences/images", request.BannerImage);
+
+        experience.Image = mainImage;
+        experience.Images = images;
+        experience.BannerImage = bannerImage;
 
         await _unitOfWork.GetRepository<Experience>().CreateAsync(experience);
 
@@ -43,7 +71,7 @@ public class ExperienceService : IExperienceService
             throw new ApiException("experience couldn't find ");
 
         var experienceModel = _mapper.Map<Experience, ExperienceResponse>(experience);
-        
+
         if (experience.BoxId != null)
         {
             experienceModel.Box = await _boxService.GetByIdAsync(experience.BoxId.Value);

@@ -8,6 +8,8 @@ using camp_fire.Infrastructure.Email;
 using camp_fire.Infrastructure.Settings;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+using Microsoft.Extensions.FileProviders;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,6 +59,19 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
 
+var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "experiences", "images");
+
+if (!Directory.Exists(uploadsFolder))
+{
+    Directory.CreateDirectory(uploadsFolder);
+}
+
+app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "experiences", "images")),
+    RequestPath = "/static/experiences/images"
+});
 
 // Configure the HTTP request pipeline.
 // if (app.Environment.IsDevelopment())

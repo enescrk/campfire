@@ -4,32 +4,23 @@ public class ImageHelper
 {
     public string SaveImage(string folderName, string image)
     {
-        //* Gelen resmin Extension'ını al
+        var hashedKey = DateTime.Now.ToString("yyMMddHHmmss") + DateTime.Now.Ticks.ToString();
         var file = FileExtensionHandler.GetFileContentList().FirstOrDefault(y => image!.StartsWith(y.Key!));
         var extension = Path.GetExtension(file?.Extension);
-
-        //* Gelen resim adı yerine standart isim vermek için tarih formatını al
-        var hashedKey = DateTime.Now.ToString("yyMMddHHmmss") + DateTime.Now.Ticks.ToString();
-
-        //* Image adını => ImageType_HashedKey.Extension olarak oluştur
         string fileName = hashedKey + extension;
 
-        //* Path ile Image adını birleştir
-        var path = Path.Combine(folderName, fileName);
+        // Dizin yolu oluştur
+        var directoryPath = Path.Combine("wwwroot", folderName);
+        var path = Path.Combine(directoryPath, fileName);
 
-        if (!Directory.Exists(folderName))
+        // Dizin yoksa oluştur
+        if (!Directory.Exists(directoryPath))
         {
-            Directory.CreateDirectory(folderName);
+            Directory.CreateDirectory(directoryPath);
         }
 
-        //* Url oluştur
-        var url = "http://37.148.213.3/static/" + path; //TODO: domain eklenecek.
-
-        //* Image'ı fiziksel olarak kaydet
+        var url = $"http://37.148.213.3/{folderName}/{fileName}";
         byte[] imageBytes = Convert.FromBase64String(image!);
-
-        // var reducedImageBytes =  ReducingImageQuality(imageBytes);
-
         System.IO.File.WriteAllBytes(path, imageBytes);
 
         return url;

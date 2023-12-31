@@ -1,4 +1,4 @@
-// namespace HilfeOhneGrenzen.API.Configurations.Middlewares;
+namespace camp_fire.API.Configurations.Middlewares;
 
 // public class SwaggerAuthorizationMiddleware
 // {

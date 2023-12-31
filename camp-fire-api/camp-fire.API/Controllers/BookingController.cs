@@ -20,6 +20,14 @@ public class BookingController : BaseApiController
         _bookingService = bookingService;
     }
 
+    [HttpGet]
+    [AllowAnonymous]
+    public async Task<IActionResult> Get([FromQuery] GetBookingsRequest request)
+    {
+        var result = await _bookingService.GetAsync(request);
+        return Ok(new BaseApiResult { Data = result });
+    }
+
     [HttpGet("{id}")]
     [AllowAnonymous]
     public async Task<IActionResult> Get(int id)

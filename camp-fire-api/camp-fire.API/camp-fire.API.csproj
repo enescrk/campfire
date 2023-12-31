@@ -25,4 +25,14 @@
     <ProjectReference Include="..\camp-fire.Infrastructure\camp-fire.Infrastructure.csproj" />
   </ItemGroup>
 
+    <ItemGroup>
+    <None Update="static/*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+      <ItemGroup>
+        <Content Include="static/**" />
+    </ItemGroup>
+
 </Project>

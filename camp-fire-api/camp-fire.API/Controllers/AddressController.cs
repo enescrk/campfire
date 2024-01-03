@@ -21,7 +21,7 @@ public class AddressController : BaseApiController
         _addressService = addressService;
     }
 
-     [HttpGet("{id}")]
+    [HttpGet("{id}")]
     [AllowAnonymous]
     public async Task<IActionResult> Get(int id)
     {

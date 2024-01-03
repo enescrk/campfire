@@ -44,13 +44,21 @@ public class BookingController : BaseApiController
         return Ok(result);
     }
 
-    // [HttpPut]
-    // [AllowAnonymous]
-    // public async Task<IActionResult> Put([FromBody] UpdateBoxRequestVM request)
-    // {
-    //     var result = await _boxService.UpdateAsync(request);
-    //     //TODO: Tekrar get isteği atılacak mı yoksa güncel entity dönecek mi?
+    [HttpPut]
+    [AllowAnonymous]
+    public async Task<IActionResult> Put([FromBody] UpdateBookingRequest request)
+    {
+        var result = await _bookingService.UpdateAsync(request);
 
-    //     return Ok(new BaseApiResult { Data = result });
-    // }
+        return Ok(new BaseApiResult { Data = result });
+    }
+
+    [HttpDelete]
+    [AllowAnonymous]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _bookingService.DeleteAsync(id);
+
+        return Ok(new BaseApiResult());
+    }
 }

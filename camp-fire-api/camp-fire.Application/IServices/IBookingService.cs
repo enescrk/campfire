@@ -6,7 +6,8 @@ namespace camp_fire.Application.IServices;
 public interface IBookingService
 {
     Task<int> CreateAsync(CreateBookingRequest request);
-    Task<AddressResponseVM> UpdateAsync(UpdateAddressRequestVM request);
+    Task<BookingResponse> UpdateAsync(UpdateBookingRequest request);
     Task<BookingResponse> GetByIdAsync(int id);
     Task<List<BookingResponse>> GetAsync(GetBookingsRequest request);
+    Task DeleteAsync(int id);
 }

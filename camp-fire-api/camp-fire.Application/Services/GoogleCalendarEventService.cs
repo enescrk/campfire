@@ -1,3 +1,4 @@
+using System.Net.Mail;
 using camp_fire.Application.IServices;
 using camp_fire.Application.Models.Request;
 using camp_fire.Infrastructure.Helpers;
@@ -10,18 +11,30 @@ using Microsoft.Extensions.Options;
 
 namespace camp_fire.Application.Services;
 
-public class GoogleCalendarEventService: IGoogleCalendarEventService
+public class GoogleCalendarEventService : IGoogleCalendarEventService
 {
     private readonly GoogleCalendarApiSettings _googleCalendarApiSettings;
-    
+
     public GoogleCalendarEventService(IOptions<GoogleCalendarApiSettings> googleCalendarApiSettings)
     {
         _googleCalendarApiSettings = googleCalendarApiSettings.Value;
     }
-    
-    public async Task<string> CreateEventAsync(CreateGoogleCalendarEventVM request)
+
+    public async Task<Event?> CreateEventAsync(CreateGoogleCalendarEventVM request)
     {
         var service = await GetCalendarServiceAsync();
+
+        var attendees = new List<EventAttendee>();
+
+        foreach (var email in request.Attendees)
+        {
+            var attendee = new EventAttendee
+            {
+                Email = email
+            };
+
+            attendees.Add(attendee);
+        }
 
         var newEvent = new Event()
         {
@@ -46,6 +59,13 @@ public class GoogleCalendarEventService: IGoogleCalendarEventService
                     new EventReminder { Method = "popup", Minutes = 10 },
                 },
             },
+            GuestsCanSeeOtherGuests = true,
+            Attendees = attendees,
+            Creator = new Event.CreatorData
+            {
+                DisplayName = "Experience Hub",
+                Email = "experiences.teams@gmail.com",
+            },
             ConferenceData = new ConferenceData
             {
                 CreateRequest = new CreateConferenceRequest
@@ -62,21 +82,21 @@ public class GoogleCalendarEventService: IGoogleCalendarEventService
         var serviceRequest = service.Events.Insert(newEvent, _googleCalendarApiSettings.CalendarId);
         serviceRequest.ConferenceDataVersion = 1;
         var createdEvent = await serviceRequest.ExecuteAsync();
-        
+
         Console.WriteLine($"Etkinlik oluşturuldu: {createdEvent.HtmlLink}");
 
         return await GetMeetLinkAsync(service, _googleCalendarApiSettings.CalendarId, createdEvent.Id);
     }
-    
-    private async Task<string> GetMeetLinkAsync(CalendarService service, string calendarId, string eventId)
+
+    private async Task<Event?> GetMeetLinkAsync(CalendarService service, string calendarId, string eventId)
     {
         var getRequest = service.Events.Get(calendarId, eventId);
         var eventDetails = await getRequest.ExecuteAsync();
         Console.WriteLine($"Etkinlik detayları:{eventDetails.ToJson()}");
 
-        return !string.IsNullOrEmpty(eventDetails.HtmlLink) ? eventDetails.HtmlLink : null;
+        return eventDetails;
     }
-    
+
     private async Task<CalendarService> GetCalendarServiceAsync()
     {
         var credential = await GetUserCredentialAsync();
@@ -89,7 +109,7 @@ public class GoogleCalendarEventService: IGoogleCalendarEventService
 
         return service;
     }
-    
+
     private async Task<UserCredential> GetUserCredentialAsync()
     {
         using (var stream = new FileStream(_googleCalendarApiSettings.CredentialsPath, FileMode.Open, FileAccess.Read))

@@ -50,6 +50,7 @@ public class AddressService : IAddressService
     {
         var address = new Address
         {
+            Title = request.Title,
             CountryId = request.CountryId,
             UserId = request.UserId,
             City = request.City,
@@ -61,7 +62,7 @@ public class AddressService : IAddressService
 
         return await _unitOfWork.SaveChangesAsync();
     }
-    
+
 
     public async Task<AddressResponseVM> UpdateAsync(UpdateAddressRequestVM request)
     {

@@ -27,6 +27,7 @@ public class UpdateAddressRequestVM : CreateAddressRequestVM
 
 public class CreateAddressRequestVM
 {
+    public string Title { get; set; }
     public int CountryId { get; set; }
     public int UserId { get; set; }
     public string? City { get; set; }

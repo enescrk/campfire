@@ -6,4 +6,5 @@ public class CreateGoogleCalendarEventVM
     public required DateTime EndDate { get; set; }
     public required string Title { get; set; }
     public required string Description { get; set; }
+    public List<string> Attendees { get; set; }
 }

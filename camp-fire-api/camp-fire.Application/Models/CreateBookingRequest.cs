@@ -12,6 +12,17 @@ public class CreateBookingRequest
     public string MeetingUrl { get; set; }
 }
 
+public class UpdateBookingRequest
+{
+    public int Id { get; set; }
+    public List<string> ParticipantMails { get; set; }
+    public int? CompanyId { get; set; }
+    public int? ModeratorId { get; set; }
+    public DateTime Date { get; set; }
+    public int? OwnerId { get; set; }
+    public string MeetingUrl { get; set; }
+}
+
 public class GetBookingsRequest
 {
     public int? Id { get; set; }

@@ -1,8 +1,8 @@
+using camp_fire.Application.Models.Request;
+
 namespace camp_fire.Application.IServices;
 
 public interface ICompanyService
 {
-    // Task<int> CreateAsync(CreateAddressRequestVM request);
-    // Task<AddressResponseVM> UpdateAsync(UpdateAddressRequestVM request);
-    // Task<AddressResponseVM?> GetByIdAsync(int id);
+    Task CreateAsync(CreateCompanyRequest request);
 }

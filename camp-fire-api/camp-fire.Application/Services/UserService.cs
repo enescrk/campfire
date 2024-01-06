@@ -1,3 +1,4 @@
+using AutoMapper;
 using camp_fire.Application.Configurations.Helpers;
 using camp_fire.Application.IServices;
 using camp_fire.Application.Models;
@@ -13,12 +14,15 @@ public class UserService : IUserService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IEmailService _emailService;
+    private readonly IMapper _mapper;
 
     public UserService(IUnitOfWork unitOfWork,
-                       IEmailService emailService)
+                       IEmailService emailService,
+                       IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _emailService = emailService;
+        _mapper = mapper;
     }
 
     public async Task<List<UserResponseVM>> GetAsync(GetUserRequestVM request)
@@ -59,6 +63,29 @@ public class UserService : IUserService
         return mappedUser;
     }
 
+    public async Task<List<UserResponseVM>> GetAllAsync(GetUsersRequest request)
+    {
+        var users = _unitOfWork.GetRepository<User>().Find(x => !x.IsDeleted
+        && (request.Id == null || x.Id == request.Id)
+        && (request.Ids == null || request.Ids.Contains(x.Id))
+        && (string.IsNullOrEmpty(request.Name) || x.Name.ToLower().Contains(request.Name.Trim()))
+        && (string.IsNullOrEmpty(request.PhoneNumber) || x.PhoneNumber.Contains(request.PhoneNumber.Trim()))
+        && (request.Gender == null || x.Gender == request.Gender)
+        ).Select(x => new UserResponseVM
+        {
+            Id = x.Id,
+            Name = x!.Name!,
+            Surname = x.Surname,
+            AuthorizedCompanies = x.AuthorizedCompanies,
+            Gender = x.Gender,
+            EMail = x.EMail,
+            UserType = x.UserType,
+            PhoneNumber = x.PhoneNumber
+        }).ToList();
+
+        return await Task.FromResult(users);
+    }
+
     public async Task<int> CreateAsync(CreateUserRequestVM request)
     {
         var user = new User
@@ -89,7 +116,9 @@ public class UserService : IUserService
             {
                 EMail = request.Email.Trim(),
                 Name = request.Name?.Trim(),
-                Surname = request.Surname?.Trim()
+                Surname = request.Surname?.Trim(),
+                PhoneNumber = request.PhoneNumber.Trim(),
+                Gender = request.Gender ?? true
             };
 
             await _unitOfWork.GetRepository<User>().CreateAsync(user);

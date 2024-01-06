@@ -63,7 +63,8 @@ public class UserConfirmationService : IUserConfirmationService
             ExpiresIn = tokenResult.ExpiresIn,
             FullName = tokenResult.FullName,
             Id = tokenResult.Id,
-            RefreshToken = tokenResult.RefreshToken
+            RefreshToken = tokenResult.RefreshToken,
+            IsManager = tokenResult.IsManager
         });
     }
 

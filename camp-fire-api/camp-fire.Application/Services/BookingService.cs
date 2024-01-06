@@ -3,6 +3,7 @@ using camp_fire.Application.IServices;
 using camp_fire.Application.Models;
 using camp_fire.Application.Models.Request;
 using camp_fire.Application.Models.Response;
+using camp_fire.Application.Token;
 using camp_fire.Domain.Entities;
 using camp_fire.Domain.SeedWork;
 using camp_fire.Domain.SeedWork.Exceptions;
@@ -29,10 +30,6 @@ public class BookingService : IBookingService
 
     public async Task<int> CreateAsync(CreateBookingRequest request)
     {
-        //TODO: Etklinliği oluşturan kullanıcının bilgileri çekilecek. bunun için login oluşturulacak. Token'ı üzerinden Id'si etkinliğe setlenecek. Mail adresi de davetlielerer gönderilen mail'e eklenecek.(Soru iptal erteleme işlemlerine oluşturan kişi bakacak.)
-        //TODO: Email template'i oluşturulacak.
-        //TODO: Emaideki linke tıklandığında servise istek atılacak ve etkinlik zamanı ve yetki kontrolleri bu serviste olacak.
-
         #region Experience Check
 
         var experience = await _unitOfWork.GetRepository<Experience>().FindOneAsync(x => x.Id == request.ExperienceId);
@@ -76,6 +73,7 @@ public class BookingService : IBookingService
 
         var booking = new Booking
         {
+            CreatedBy = request.CreatedBy,
             ExperienceId = request.ExperienceId,
             ModeratorId = request.ModeratorId,
             OwnerId = request.OwnerId,
@@ -89,8 +87,6 @@ public class BookingService : IBookingService
         await _unitOfWork.GetRepository<Booking>().CreateAsync(booking);
 
         #endregion
-
-        //TODO:Emai'e login sayfasının url'i + eventId gidecek.
 
         #region Meeting oluşturma 
 
@@ -119,9 +115,10 @@ public class BookingService : IBookingService
         return await _unitOfWork.SaveChangesAsync();
     }
 
-    public async Task<List<BookingResponse>> GetAsync(GetBookingsRequest request)
+    public async Task<List<BookingResponse>> GetMyAsync(GetBookingsRequest request)
     {
-        var bookingList = _unitOfWork.GetRepository<Booking>().Find(x => !x.IsDeleted
+        var bookingList = _unitOfWork.GetRepository<Booking>().Find(x =>
+                !x.IsDeleted && x.CreatedBy == request.CreatedBy
               && (request.Id == null || x.Id == request.Id)
               && (request.ExperienceId == null || x.ExperienceId == request.ExperienceId)
               && (request.CompanyId == null || x.CompanyId == request.CompanyId)
@@ -129,19 +126,59 @@ public class BookingService : IBookingService
               && (request.ModeratorId == null || x.ModeratorId == request.ModeratorId)
               && (request.UserIds == null || x.UserIds.Any(y => request.UserIds.Contains(y)))
               && (request.StartDate == null || x.Date.Date >= request.StartDate.Value.Date)
-              && (request.EndDate == null || x.Date.Date <= request.EndDate.Value.Date))
-              .Select(x => new BookingResponse
-              {
-                  Id = x.Id,
-                  Date = x.Date,
-                  CreatedDate = x.CreatedDate,
-                  ExperienceId = x.ExperienceId
-              }).ToList();
+              && (request.EndDate == null || x.Date.Date <= request.EndDate.Value.Date)).ToList();
 
         var experienceIds = bookingList.Select(x => x.ExperienceId).ToList();
         var experiences = _unitOfWork.GetRepository<Experience>().Find(x => !x.IsDeleted && experienceIds.Contains(x.Id)).ToList();
 
-        return await Task.FromResult(bookingList);
+        var participantUsers = bookingList.SelectMany(x => x.UserIds).ToList();
+        var users = _unitOfWork.GetRepository<User>().Find(x => !x.IsDeleted && participantUsers.Contains(x.Id)).ToList();
+
+        var response = bookingList.Select(x => new BookingResponse
+        {
+            Id = x.Id,
+            Date = x.Date,
+            CreatedDate = x.CreatedDate,
+            ParticipantUsers = users.Where(y => x.UserIds.Contains(y.Id)).Select(y => y.EMail).ToList(),
+            UpdatedDate = x.UpdatedDate,
+            ExperienceId = x.ExperienceId,
+            ExperienceTitle = experiences.FirstOrDefault(y => y.Id == x.ExperienceId).Title
+        }).ToList();
+
+        return await Task.FromResult(response);
+    }
+
+    public async Task<List<BookingResponse>> GetAsync(GetBookingsRequest request)
+    {
+        var bookingList = _unitOfWork.GetRepository<Booking>().Find(x =>
+                !x.IsDeleted
+              && (request.Id == null || x.Id == request.Id)
+              && (request.ExperienceId == null || x.ExperienceId == request.ExperienceId)
+              && (request.CompanyId == null || x.CompanyId == request.CompanyId)
+              && (request.OwnerId == null || x.OwnerId == request.OwnerId)
+              && (request.ModeratorId == null || x.ModeratorId == request.ModeratorId)
+              && (request.UserIds == null || x.UserIds.Any(y => request.UserIds.Contains(y)))
+              && (request.StartDate == null || x.Date.Date >= request.StartDate.Value.Date)
+              && (request.EndDate == null || x.Date.Date <= request.EndDate.Value.Date)).ToList();
+
+        var experienceIds = bookingList.Select(x => x.ExperienceId).ToList();
+        var experiences = _unitOfWork.GetRepository<Experience>().Find(x => !x.IsDeleted && experienceIds.Contains(x.Id)).ToList();
+
+        var participantUsers = bookingList.SelectMany(x => x.UserIds).ToList();
+        var users = _unitOfWork.GetRepository<User>().Find(x => !x.IsDeleted && participantUsers.Contains(x.Id)).ToList();
+
+        var response = bookingList.Select(x => new BookingResponse
+        {
+            Id = x.Id,
+            Date = x.Date,
+            CreatedDate = x.CreatedDate,
+            ParticipantUsers = users.Where(y => x.UserIds.Contains(y.Id)).Select(y => y.EMail).ToList(),
+            UpdatedDate = x.UpdatedDate,
+            ExperienceId = x.ExperienceId,
+            ExperienceTitle = experiences.FirstOrDefault(y => y.Id == x.ExperienceId).Title
+        }).ToList();
+
+        return await Task.FromResult(response);
     }
 
     public async Task<BookingResponse> GetByIdAsync(int id)
@@ -168,6 +205,7 @@ public class BookingService : IBookingService
         booking.Date = request.Date;
         booking.MeetingUrl = request.MeetingUrl;
         booking.ModeratorId = request.ModeratorId;
+        booking.UpdatedBy = request.CreatedBy;
 
         #region Var olmayan kullanıcıları bulup db'ye ekle
 

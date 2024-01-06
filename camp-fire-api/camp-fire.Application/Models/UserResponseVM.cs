@@ -42,3 +42,13 @@ public class UpdateUserRequestVM : UserResponseVM
 public class CreateUserRequestVM : UserResponseVM
 {
 }
+
+public class GetUsersRequest
+{
+    public int? Id { get; set; }
+    public List<int>? Ids { get; set; }
+    public string? Name { get; set; }
+    public string? PhoneNumber { get; set; }
+    public bool? Gender { get; set; }
+    public string? EMail { get; set; }
+}

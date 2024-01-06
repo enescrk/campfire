@@ -10,6 +10,12 @@ using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using Microsoft.Extensions.FileProviders;
 using System.Reflection;
+using Asp.Versioning;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,7 +47,9 @@ builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 // builder.Services.AddTransient<EventHub>();
 
-var foo = builder.Configuration.GetConnectionString(nameof(CampFireDBContext));
+
+
+builder.Configuration.GetConnectionString(nameof(CampFireDBContext));
 builder.Services.AddEntityFrameworkNpgsql().AddDbContext<CampFireDBContext>((optionBuilder) =>
     optionBuilder.UseNpgsql(builder.Configuration.GetConnectionString(nameof(CampFireDBContext))));
 
@@ -58,6 +66,65 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
         .SetIsOriginAllowed(origin => true)));
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "ExperienceHub.API", Version = "v1" });
+
+    c.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+            {
+                new OpenApiSecurityScheme { Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = JwtBearerDefaults.AuthenticationScheme } },
+                new string[] { }
+            }
+    });
+});
+
+builder.Services.AddApiVersioning(options =>
+    {
+        options.DefaultApiVersion = new ApiVersion(1, 0);
+        options.AssumeDefaultVersionWhenUnspecified = true;
+        options.ReportApiVersions = true;
+    })
+    .AddApiExplorer(options =>
+    {
+        options.GroupNameFormat = "'v'VVV";
+        options.SubstituteApiVersionInUrl = true;
+    });
+
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+}).AddJwtBearer(cfg =>
+{
+    cfg.RequireHttpsMetadata = false;
+    cfg.SaveToken = true;
+
+    cfg.TokenValidationParameters = new TokenValidationParameters
+    {
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["Authentication:JwtKey"])),
+        ValidateIssuerSigningKey = true,
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidIssuer = builder.Configuration["Authentication:Url"],
+        ValidAudience = builder.Configuration["Authentication:Url"],
+        ClockSkew = TimeSpan.Zero,
+        ValidateLifetime = true
+    };
+});
 
 var app = builder.Build();
 
@@ -76,11 +143,14 @@ app.UseStaticFiles(new StaticFileOptions
 });
 
 // Configure the HTTP request pipeline.
-// if (app.Environment.IsDevelopment())
-// {
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+
 app.UseSwagger();
 app.UseSwaggerUI();
-// }
+
 
 app.UseCors();
 

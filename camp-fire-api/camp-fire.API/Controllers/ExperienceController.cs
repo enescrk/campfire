@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using camp_fire.API.Configurations;
 using camp_fire.Application.IServices;
 using camp_fire.Application.Models;
@@ -6,7 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace camp_fire.API.Controllers;
 
-[Route("[controller]")]
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/[controller]")]
 public class ExperienceController : BaseApiController
 {
     private readonly ILogger<ExperienceController> _logger;

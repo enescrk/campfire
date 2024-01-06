@@ -8,6 +8,7 @@ public interface IBookingService
     Task<int> CreateAsync(CreateBookingRequest request);
     Task<BookingResponse> UpdateAsync(UpdateBookingRequest request);
     Task<BookingResponse> GetByIdAsync(int id);
+    Task<List<BookingResponse>> GetMyAsync(GetBookingsRequest request);
     Task<List<BookingResponse>> GetAsync(GetBookingsRequest request);
     Task DeleteAsync(int id);
 }

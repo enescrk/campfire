@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace camp_fire.Application.Models;
 
 public class CreateBookingRequest
@@ -10,6 +12,8 @@ public class CreateBookingRequest
     public int? OwnerId { get; set; }
     public string RecordUrl { get; set; }
     public string MeetingUrl { get; set; }
+    [JsonIgnore]
+    public int CreatedBy { get; set; }
 }
 
 public class UpdateBookingRequest
@@ -21,6 +25,8 @@ public class UpdateBookingRequest
     public DateTime Date { get; set; }
     public int? OwnerId { get; set; }
     public string MeetingUrl { get; set; }
+    [JsonIgnore]
+    public int CreatedBy { get; set; }
 }
 
 public class GetBookingsRequest
@@ -33,4 +39,6 @@ public class GetBookingsRequest
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
     public int? OwnerId { get; set; }
+    [JsonIgnore]
+    public int CreatedBy { get; set; }
 }

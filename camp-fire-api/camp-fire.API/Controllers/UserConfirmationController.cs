@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using camp_fire.API.Configurations;
 using camp_fire.API.Hubs;
 using camp_fire.Application.IServices;
@@ -9,7 +10,8 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace camp_fire.API.Controllers;
 
-[Route("[controller]")]
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/[controller]")]
 public class UserConfirmationController : BaseApiController
 {
     private readonly ILogger<UserConfirmationController> _logger;

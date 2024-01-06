@@ -24,10 +24,10 @@ public static class TokenProvider
 
         var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
-                new Claim(JwtRegisteredClaimNames.Jti, user.Id.ToString() ?? ""),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email.Encrypt() ?? ""),
+                new Claim(JwtRegisteredClaimNames.Jti, user.Id.ToString().Encrypt() ?? ""),
                 new Claim(JwtRegisteredClaimNames.NameId, user.FullName?.Encrypt() ?? ""),
-                new Claim("usermodel", user.ToJson())
+                new Claim("usermodel", user.ToJson().Encrypt()!)
             };
 
         var token = new JwtSecurityToken(issuer, issuer, claims, expires: expiresIn, signingCredentials: creds);

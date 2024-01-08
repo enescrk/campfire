@@ -57,3 +57,15 @@ public class CreateExperienceRequest
     public int? OwnerId { get; set; } //
     public int? EnterpriceLevelId { get; set; } //
 }
+
+public class AddModeratorRequest
+{
+    public int Id { get; set; }
+    public int ModeratorId { get; set; }
+}
+
+public class AddBoxRequest
+{
+    public int Id { get; set; }
+    public int BoxId { get; set; }
+}

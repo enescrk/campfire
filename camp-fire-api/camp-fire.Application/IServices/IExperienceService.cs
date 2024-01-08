@@ -8,5 +8,7 @@ public interface IExperienceService
     Task<ExperienceResponse> UpdateAsync(UpdateExperienceRequest request);
     Task<ExperienceResponse?> GetByIdAsync(int id);
     Task<List<ExperienceResponse>>? GetllAsync(GetExperienceRequest request);
+    Task<ExperienceResponse> AddModerator(AddModeratorRequest request);
+    Task<ExperienceResponse> AddBox(AddBoxRequest request);
     Task DeleteAsync(int id);
 }

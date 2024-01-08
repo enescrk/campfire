@@ -22,4 +22,5 @@ public class Experience : BaseEntity
     public int? OwnerId { get; set; } //
     public int? EnterpriceLevelId { get; set; } //
     public List<DateTime>? AvailableDates { get; set; }
+    public int? ModeratorId { get; set; }
 }

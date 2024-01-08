@@ -128,6 +128,52 @@ public class ExperienceService : IExperienceService
         return updatedExperience!;
     }
 
+    public async Task<ExperienceResponse> AddModerator(AddModeratorRequest request)
+    {
+        var experience = await _unitOfWork.GetRepository<Experience>().GetByIdAsync(request.Id);
+
+        if (experience is null)
+            throw new ApiException("Experience couldn't find");
+
+        var user = await _unitOfWork.GetRepository<User>().GetByIdAsync(request.ModeratorId);
+
+        if (user is null)
+            throw new ApiException("User couldn't find");
+
+        experience.ModeratorId = request.ModeratorId;
+
+        _unitOfWork.GetRepository<Experience>().Update(experience);
+
+        await _unitOfWork.SaveChangesAsync();
+
+        var updatedExperience = await GetByIdAsync(request.Id);
+
+        return updatedExperience!;
+    }
+
+    public async Task<ExperienceResponse> AddBox(AddBoxRequest request)
+    {
+        var experience = await _unitOfWork.GetRepository<Experience>().GetByIdAsync(request.Id);
+
+        if (experience is null)
+            throw new ApiException("Experience couldn't find");
+
+        var box = await _unitOfWork.GetRepository<Box>().GetByIdAsync(request.BoxId);
+
+        if (box is null)
+            throw new ApiException("Box couldn't find");
+
+        experience.BoxId = request.BoxId;
+
+        _unitOfWork.GetRepository<Experience>().Update(experience);
+
+        await _unitOfWork.SaveChangesAsync();
+
+        var updatedExperience = await GetByIdAsync(request.Id);
+
+        return updatedExperience!;
+    }
+
     public async Task DeleteAsync(int id)
     {
         var experience = await _unitOfWork.GetRepository<Experience>().GetByIdAsync(id);

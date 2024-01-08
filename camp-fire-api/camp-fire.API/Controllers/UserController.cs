@@ -50,7 +50,6 @@ public class UserController : BaseApiController
     }
 
     [HttpPost]
-    [AllowAnonymous]
     public async Task<IActionResult> Post([FromBody] CreateUserRequestVM request)
     {
         var loggedInUser = TokenProvider.GetLoggedInUser(User);

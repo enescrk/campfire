@@ -2,6 +2,8 @@ using Asp.Versioning;
 using camp_fire.API.Configurations;
 using camp_fire.Application.IServices;
 using camp_fire.Application.Models;
+using camp_fire.Application.Token;
+using camp_fire.Domain.SeedWork.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +11,7 @@ namespace camp_fire.API.Controllers;
 
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/[controller]")]
+[Authorize]
 public class ExperienceController : BaseApiController
 {
     private readonly ILogger<ExperienceController> _logger;
@@ -51,6 +54,32 @@ public class ExperienceController : BaseApiController
     public async Task<IActionResult> Put([FromBody] UpdateExperienceRequest request)
     {
         var result = await _experienceService.UpdateAsync(request);
+
+        return Ok(result);
+    }
+
+    [HttpPut("admin/addModerator")]
+    public async Task<IActionResult> AddModerator([FromBody] AddModeratorRequest request)
+    {
+        var loggedInUser = TokenProvider.GetLoggedInUser(User);
+
+        if (!loggedInUser.IsManager)
+            throw new ApiException("You don't have permission!");
+
+        var result = await _experienceService.AddModerator(request);
+
+        return Ok(result);
+    }
+
+    [HttpPut("admin/addBox")]
+    public async Task<IActionResult> AddBox([FromBody] AddBoxRequest request)
+    {
+        var loggedInUser = TokenProvider.GetLoggedInUser(User);
+
+        if (!loggedInUser.IsManager)
+            throw new ApiException("You don't have permission!");
+
+        var result = await _experienceService.AddBox(request);
 
         return Ok(result);
     }

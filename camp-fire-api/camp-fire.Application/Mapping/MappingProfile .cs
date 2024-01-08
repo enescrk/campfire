@@ -20,5 +20,9 @@ public class MappingProfile : Profile
         CreateMap<Booking, BookingResponse>();
         CreateMap<CreateBoxRequestVM, Box>();
         CreateMap<UpdateBoxRequestVM, Box>();
+        
+        CreateMap<Agenda, AgendaResponseVM>();
+        CreateMap<CreateAgendaRequestVM, Agenda>();
+        CreateMap<UpdateAgendaRequestVM, Agenda>();
     }
 }

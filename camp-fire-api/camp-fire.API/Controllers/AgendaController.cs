@@ -10,40 +10,48 @@ namespace camp_fire.API.Controllers;
 
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/[controller]")]
-public class AddressController : BaseApiController
+public class AgendaController : BaseApiController
 {
     private readonly ILogger<AddressController> _logger;
-    private readonly IAddressService _addressService;
+    private readonly IAgendaService _agendaService;
 
-    public AddressController(ILogger<AddressController> logger,
-                            IAddressService addressService
+    public AgendaController(ILogger<AddressController> logger,
+                            IAgendaService agendaService
                             ) : base(logger)
     {
         _logger = logger;
-        _addressService = addressService;
+        _agendaService = agendaService;
     }
 
     [HttpGet("{id}")]
     [AllowAnonymous]
     public async Task<IActionResult> Get(int id)
     {
-        var result = await _addressService.GetByIdAsync(id);
+        var result = await _agendaService.GetByIdAsync(id);
         return Ok(new BaseApiResult { Data = result });
     }
 
     [HttpPost]
     [AllowAnonymous]
-    public async Task<IActionResult> Post([FromBody] CreateAddressRequestVM request)
+    public async Task<IActionResult> Post([FromBody] CreateAgendaRequestVM request)
     {
-        var result = await _addressService.CreateAsync(request);
+        var result = await _agendaService.CreateAsync(request);
         return Ok(result);
     }
 
     [HttpPut]
     [AllowAnonymous]
-    public async Task<IActionResult> Put([FromBody] UpdateAddressRequestVM request)
+    public async Task<IActionResult> Put([FromBody] UpdateAgendaRequestVM request)
     {
-        var result = await _addressService.UpdateAsync(request);
+        var result = await _agendaService.UpdateAsync(request);
         return Ok(result);
+    }
+    
+    [HttpDelete]
+    [AllowAnonymous]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _agendaService.DeleteAsync(id);
+        return Ok();
     }
 }

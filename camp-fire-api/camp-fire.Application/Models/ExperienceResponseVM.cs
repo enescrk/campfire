@@ -17,7 +17,7 @@ public class ExperienceResponse
     public List<string>? Images { get; set; }
     public string? Header { get; set; }
     public string? HeaderContent { get; set; }
-    public List<AgendaResponse>? Agendas { get; set; }
+    public List<AgendaResponseVM>? Agendas { get; set; }
     public int? OwnerId { get; set; } //
     public int? EnterpriceLevelId { get; set; } //
 }

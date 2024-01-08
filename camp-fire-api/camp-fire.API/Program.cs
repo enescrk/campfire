@@ -41,6 +41,7 @@ builder.Services.AddScoped<IExperienceService, ExperienceService>();
 builder.Services.AddScoped<IBoxService, BoxService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IGoogleCalendarEventService, GoogleCalendarEventService>();
+builder.Services.AddScoped<IAgendaService, AgendaService>();
 builder.Services.Configure<GoogleCalendarApiSettings>(builder.Configuration.GetSection("GoogleCalendarApi"));
 
 builder.Services.AddTransient<IEmailService, EmailService>();

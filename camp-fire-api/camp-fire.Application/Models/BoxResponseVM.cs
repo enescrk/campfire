@@ -10,7 +10,8 @@ public class BoxResponseVM
 
 public class GetBoxRequestVM
 {
-    public int Id { get; set; }
+    public int? Id { get; set; }
+    public List<int>? Ids { get; set; }
 }
 
 public class CreateBoxRequestVM

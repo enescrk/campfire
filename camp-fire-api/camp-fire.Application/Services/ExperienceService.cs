@@ -13,12 +13,16 @@ public class ExperienceService : IExperienceService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly IBoxService _boxService;
+    private readonly IAgendaService _agendaService;
 
     public ExperienceService(IUnitOfWork unitOfWork,
-                            IMapper mapper, IBoxService boxService)
+                            IAgendaService agendaService,
+                            IMapper mapper, 
+                            IBoxService boxService)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _agendaService = agendaService;
         _boxService = boxService;
     }
 
@@ -29,6 +33,20 @@ public class ExperienceService : IExperienceService
         if (request.Box != null)
         {
             experience.BoxId = await _boxService.CreateAsync(request.Box);
+        }
+
+        if (request.Agendas != null)
+        {
+            var newAgendas = request.Agendas.Select(x => new Agenda
+            {
+                Title = x.Title,
+                Description = x.Description,
+                Duration = x.Duration,
+            }).ToList();
+
+            await _unitOfWork.GetRepository<Agenda>().BulkCreateAsync(newAgendas);
+
+            experience.AgendaIds = newAgendas.Select(x => x.Id).ToList();
         }
 
         List<string> images = null!;
@@ -83,31 +101,45 @@ public class ExperienceService : IExperienceService
     public async Task<List<ExperienceResponse>>? GetllAsync(GetExperienceRequest request)
     {
         var experiences = _unitOfWork.GetRepository<Experience>().Find(x =>
-
         request.Id == null || x.Id == request.Id
         && (string.IsNullOrEmpty(request.Title) || request.Title.ToLower().Contains(x.Title))
         && (request.Categories == null || x.Categories.Any(y => request.Categories.Any(z => z == y))))
-        .Select(x => new ExperienceResponse
+        .ToList();
+
+        // var result = _mapper.Map<IList<Experience>, List<ExperienceResponse>>(experiences);
+
+        var agendaIds = experiences.SelectMany(x => x.AgendaIds).ToList();
+        var agendas = await _agendaService.GetAsync(new GetAgendaRequestVM { Ids = agendaIds });
+
+        var boxIds = experiences.SelectMany(x => x.AgendaIds).ToList();
+        var boxes = await _boxService.GetAsync(new GetBoxRequestVM { Ids = boxIds });
+
+        var response = experiences.Select(x => new ExperienceResponse
         {
             Id = x.Id,
+            Agendas = agendas.Where(y => x.AgendaIds.Contains(y.Id)).ToList(),
+            AvailableDates = x.AvailableDates,
+            BannerImage = x.BannerImage,
+            Box = boxes.FirstOrDefault(y => y.Id == x.BoxId),
             Categories = x.Categories,
             Content = x.Content,
-            Title = x.Title,
-            Summary = x.Summary,
             Currency = x.Currency,
-            BannerImage = x.BannerImage,
             Duration = x.Duration,
             EnterpriceLevelId = x.EnterpriceLevelId,
             Header = x.Header,
+            HeaderContent = x.HeaderContent,
             Image = x.Image,
             Images = x.Images,
-            HeaderContent = x.HeaderContent,
+            ModeratorId = x.ModeratorId,
             OwnerId = x.OwnerId,
             Price = x.Price,
-            VideoUrl = x.VideoUrl
+            Summary = x.Summary,
+            Title = x.Title,
+            VideoUrl = x.VideoUrl,
+            Warnings = x.Warnings
         }).ToList();
 
-        return await Task.FromResult(experiences);
+        return await Task.FromResult(response);
     }
 
     public async Task<ExperienceResponse> UpdateAsync(UpdateExperienceRequest request)

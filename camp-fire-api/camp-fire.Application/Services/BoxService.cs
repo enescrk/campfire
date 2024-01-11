@@ -21,7 +21,7 @@ public class BoxService : IBoxService
     {
         var boxes = _unitOfWork.GetRepository<Box>().Find(x =>
             request.Id == null || x.Id == request.Id
-            && (request.Id == null || x.Id == request.Id)
+            && (request.Ids == null || request.Ids.Contains(x.Id))
         ).ToList();
 
         var result = _mapper.Map<IList<Box>, List<BoxResponseVM>>(boxes);

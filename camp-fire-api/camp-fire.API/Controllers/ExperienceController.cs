@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace camp_fire.API.Controllers;
-
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/[controller]")]
 [Authorize]
@@ -85,9 +84,13 @@ public class ExperienceController : BaseApiController
     }
 
     [HttpDelete("{id}")]
-    [AllowAnonymous]
     public async Task<IActionResult> Delete(int id)
     {
+        var loggedInUser = TokenProvider.GetLoggedInUser(User);
+
+        if (!loggedInUser.IsManager)
+            throw new ApiException("You don't have permission!");
+
         await _experienceService.DeleteAsync(id);
 
         return Ok();

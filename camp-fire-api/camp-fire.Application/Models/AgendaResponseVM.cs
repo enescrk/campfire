@@ -11,6 +11,7 @@ public class AgendaResponseVM
 public class GetAgendaRequestVM
 {
     public int? Id { get; set; }
+    public List<int>? Ids { get; set; }
     public string? Title { get; set; }
     public string? Description { get; set; }
     public int? Duration { get; set; }

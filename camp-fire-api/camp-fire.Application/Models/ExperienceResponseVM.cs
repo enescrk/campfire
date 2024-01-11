@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace camp_fire.Application.Models;
 
 public class ExperienceResponse
@@ -17,9 +19,14 @@ public class ExperienceResponse
     public List<string>? Images { get; set; }
     public string? Header { get; set; }
     public string? HeaderContent { get; set; }
+    [JsonIgnore]
+    public List<int>? AgendaIds { get; set; }
     public List<AgendaResponseVM>? Agendas { get; set; }
     public int? OwnerId { get; set; } //
     public int? EnterpriceLevelId { get; set; } //
+    public List<DateTime>? AvailableDates { get; set; }
+    public int? ModeratorId { get; set; }
+    public List<string>? Warnings { get; set; }
 }
 
 public class GetExperienceRequest
@@ -49,6 +56,7 @@ public class CreateExperienceRequest
     public string? VideoUrl { get; set; }
     //public int? BoxID { get; set; } //
     public CreateBoxRequestVM? Box { get; set; }
+    public List<CreateAgendaRequestVM>? Agendas { get; set; }
     public string? Content { get; set; }
     public List<string>? Images { get; set; }
     public string? Header { get; set; }
@@ -56,6 +64,8 @@ public class CreateExperienceRequest
     public List<int>? AgendaIds { get; set; }
     public int? OwnerId { get; set; } //
     public int? EnterpriceLevelId { get; set; } //
+    public List<DateTime>? AvailableDates { get; set; }
+    public List<string> Warnings { get; set; }
 }
 
 public class AddModeratorRequest

@@ -11,7 +11,7 @@ public class Experience : BaseEntity
     public string? Image { get; set; }
     public CurrencyType? Currency { get; set; }
     public string? BannerImage { get; set; }
-    public int? Duration { get; set; }
+    public int? Duration { get; set; } //dk bazlı ektinlik
     public string? VideoUrl { get; set; }
     public int? BoxId { get; set; } //
     public string? Content { get; set; }
@@ -23,4 +23,5 @@ public class Experience : BaseEntity
     public int? EnterpriceLevelId { get; set; } //
     public List<DateTime>? AvailableDates { get; set; }
     public int? ModeratorId { get; set; }
+    public List<string>? Warnings { get; set; }
 }

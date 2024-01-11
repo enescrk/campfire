@@ -99,6 +99,9 @@ public class BookingService : IBookingService
             Attendees = participantUsers.Select(x => x.EMail).ToList()
         };
 
+        //Eventin biteceği dakika + 15 dk
+        eventRequest.EndDate = eventRequest.StartDate.AddMinutes((double)(experience.Duration + 15)!);
+
         var meetResult = await _googleCalendarEventService.CreateEventAsync(eventRequest);
 
         booking.MeetingUrl = meetResult.HangoutLink;

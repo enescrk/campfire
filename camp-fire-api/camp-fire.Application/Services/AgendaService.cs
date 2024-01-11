@@ -21,6 +21,7 @@ public class AgendaService : IAgendaService
     {
         var agendas = _unitOfWork.GetRepository<Agenda>().Find(x =>
         (request.Id == null || x.Id == request.Id)
+        && (request.Ids == null || request.Ids.Contains(x.Id))
         && (request.Description == null || x.Description == request.Description)
         && (request.Duration == null || x.Duration == request.Duration)
         && (request.Title == null || x.Title == request.Title)
@@ -37,7 +38,7 @@ public class AgendaService : IAgendaService
         if (agenda is null)
             throw new ApiException("Agenda couldn't find ");
 
-        var result = _mapper.Map<Agenda,AgendaResponseVM>(agenda);
+        var result = _mapper.Map<Agenda, AgendaResponseVM>(agenda);
 
         return result;
     }
@@ -56,6 +57,20 @@ public class AgendaService : IAgendaService
         return await _unitOfWork.SaveChangesAsync();
     }
 
+    public async Task BulkCreateAsync(List<CreateAgendaRequestVM> requestList)
+    {
+        var newAgendas = requestList.Select(x => new Agenda
+        {
+            Title = x.Title,
+            Description = x.Description,
+            Duration = x.Duration,
+        }).ToList();
+
+        await _unitOfWork.GetRepository<Agenda>().BulkCreateAsync(newAgendas);
+
+        await _unitOfWork.SaveChangesAsync();
+    }
+
 
     public async Task<AgendaResponseVM> UpdateAsync(UpdateAgendaRequestVM request)
     {
@@ -65,7 +80,7 @@ public class AgendaService : IAgendaService
             throw new ApiException("Agenda couldn't find");
 
         var mappedUpdateRequest = _mapper.Map<UpdateAgendaRequestVM, Agenda>(request);
-        
+
         _unitOfWork.GetRepository<Agenda>().Update(mappedUpdateRequest);
 
         await _unitOfWork.SaveChangesAsync();

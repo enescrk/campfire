@@ -34,7 +34,6 @@ public class BaseApiController : ControllerBase
         switch (context.Error.GetType().FullName)
         {
             case "camp-fire.Domain.SeedWork.Exceptions.AuthException":
-
                 Response.StatusCode = 401;
                 result.Message = context.Error.Message;
                 _logger.LogWarning(result.Message);
@@ -49,11 +48,6 @@ public class BaseApiController : ControllerBase
                 //TODO: Bakılacak
                 // result.Message = string.Join("; ", ((ValidationException)context.Error).Failures);
                 _logger.LogWarning("Error");
-                break;
-            case "Stripe.StripeException":
-                Response.StatusCode = 400;
-                result.Message = context.Error.Message;
-                _logger.LogCritical(result.Message);
                 break;
             default:
                 Response.StatusCode = 500;

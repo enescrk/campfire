@@ -45,7 +45,7 @@ public class ExperienceController : BaseApiController
     public async Task<IActionResult> Post([FromBody] CreateExperienceRequest request)
     {
         await _experienceService.CreateAsync(request);
-        return Ok();
+        return Ok(new BaseApiResult());
     }
 
     [HttpPut]
@@ -93,6 +93,6 @@ public class ExperienceController : BaseApiController
 
         await _experienceService.DeleteAsync(id);
 
-        return Ok();
+        return Ok(new BaseApiResult());
     }
 }

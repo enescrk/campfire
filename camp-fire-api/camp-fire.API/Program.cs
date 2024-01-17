@@ -149,6 +149,8 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
+app.UseExceptionHandler("/error");
+
 app.UseSwagger();
 app.UseSwaggerUI();
 

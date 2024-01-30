@@ -17,7 +17,7 @@ public class ExperienceService : IExperienceService
 
     public ExperienceService(IUnitOfWork unitOfWork,
                             IAgendaService agendaService,
-                            IMapper mapper, 
+                            IMapper mapper,
                             IBoxService boxService)
     {
         _unitOfWork = unitOfWork;
@@ -30,10 +30,40 @@ public class ExperienceService : IExperienceService
     {
         var experience = _mapper.Map<CreateExperienceRequest, Experience>(request);
 
+        var imageHelper = new ImageHelper();
+
+        #region Add Box
+
+        List<string> boxImages = null!;
+
         if (request.Box != null)
         {
-            experience.BoxId = await _boxService.CreateAsync(request.Box);
+            if (request.Box.Images != null && request.Box.Images.Any())
+            {
+                boxImages = new List<string>();
+
+                foreach (var item in request.Box.Images)
+                {
+                    var image = imageHelper.SaveImage("experiences/images", item);
+                    boxImages!.Add(image);
+                }
+            }
+
+            var box = new Box
+            {
+                Description = request.Box.Description,
+                Images = boxImages,
+            };
+
+            await _unitOfWork.GetRepository<Box>().CreateAsync(box);
+            await _unitOfWork.SaveChangesAsync();
+
+            experience.BoxId = box.Id;
         }
+
+        #endregion
+
+        #region Add Agendas
 
         if (request.Agendas != null)
         {
@@ -49,9 +79,11 @@ public class ExperienceService : IExperienceService
             experience.AgendaIds = newAgendas.Select(x => x.Id).ToList();
         }
 
-        List<string> images = null!;
+        #endregion
 
-        var imageHelper = new ImageHelper();
+        #region Add Images
+
+        List<string> images = null!;
 
         if (request.Images != null && request.Images.Any())
         {
@@ -70,11 +102,13 @@ public class ExperienceService : IExperienceService
 
         string bannerImage = null!;
         if (!string.IsNullOrEmpty(request.BannerImage))
-            mainImage = imageHelper.SaveImage("experiences/images", request.BannerImage);
+            bannerImage = imageHelper.SaveImage("experiences/images", request.BannerImage);
 
-        experience.Image = mainImage;
         experience.Images = images;
+        experience.Image = mainImage;
         experience.BannerImage = bannerImage;
+
+        #endregion
 
         await _unitOfWork.GetRepository<Experience>().CreateAsync(experience);
 

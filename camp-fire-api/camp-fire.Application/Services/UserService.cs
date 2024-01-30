@@ -117,7 +117,7 @@ public class UserService : IUserService
                 EMail = request.Email.Trim(),
                 Name = request.Name?.Trim(),
                 Surname = request.Surname?.Trim(),
-                PhoneNumber = request.PhoneNumber.Trim(),
+                PhoneNumber = request.PhoneNumber?.Trim(),
                 Gender = request.Gender ?? true
             };
 

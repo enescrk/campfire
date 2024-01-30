@@ -141,7 +141,7 @@ app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "experiences", "images")),
-    RequestPath = "/static/experiences/images"
+    RequestPath = "/experiences/images"
 });
 
 // Configure the HTTP request pipeline.

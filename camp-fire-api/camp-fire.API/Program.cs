@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using camp_fire.API.Hubs;
+// using camp_fire.API.Hubs;
 using camp_fire.Application.IServices;
 using camp_fire.Application.Services;
 using camp_fire.Domain;
@@ -17,6 +17,9 @@ using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.Sinks.PostgreSQL;
+using NpgsqlTypes;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,12 +34,12 @@ builder.Services.AddTransient<IAddressService, AddressService>();
 builder.Services.AddTransient<ICompanyService, CompanyService>();
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IPageService, PageService>();
-builder.Services.AddScoped<IStoryService, StoryService>();
+// builder.Services.AddScoped<IPageService, PageService>();
+// builder.Services.AddScoped<IStoryService, StoryService>();
 builder.Services.AddScoped<IUserConfirmationService, UserConfirmationService>();
-builder.Services.AddScoped<IQuestionService, QuestionService>();
-builder.Services.AddScoped<IScoreboardService, ScoreboardService>();
-builder.Services.AddScoped<IGameService, GameService>();
+// builder.Services.AddScoped<IQuestionService, QuestionService>();
+// builder.Services.AddScoped<IScoreboardService, ScoreboardService>();
+// builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<IContentService, ContentService>();
 builder.Services.AddScoped<IExperienceService, ExperienceService>();
 builder.Services.AddScoped<IBoxService, BoxService>();
@@ -49,18 +52,17 @@ builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 // builder.Services.AddTransient<EventHub>();
 
+var connectionString = builder.Configuration.GetConnectionString(nameof(CampFireDBContext));
 
-
-builder.Configuration.GetConnectionString(nameof(CampFireDBContext));
 builder.Services.AddEntityFrameworkNpgsql().AddDbContext<CampFireDBContext>((optionBuilder) =>
-    optionBuilder.UseNpgsql(builder.Configuration.GetConnectionString(nameof(CampFireDBContext))));
+    optionBuilder.UseNpgsql(connectionString));
 
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSignalR(e => { e.MaximumReceiveMessageSize = 102400000; });
+// builder.Services.AddSignalR(e => { e.MaximumReceiveMessageSize = 102400000; });
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
     policy.AllowAnyMethod()
         .AllowAnyHeader()
@@ -68,6 +70,22 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
         .SetIsOriginAllowed(origin => true)));
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+IDictionary<string, ColumnWriterBase> columnWriters = new Dictionary<string, ColumnWriterBase>
+{
+    {"Message", new RenderedMessageColumnWriter(NpgsqlDbType.Text) },
+    {"Level", new LevelColumnWriter(true, NpgsqlDbType.Varchar) },
+    {"CreatedDate", new TimestampColumnWriter(NpgsqlDbType.Timestamp) },
+    {"Exception", new ExceptionColumnWriter(NpgsqlDbType.Text) },
+    {"Properties", new LogEventSerializedColumnWriter(NpgsqlDbType.Jsonb) },
+    {"Model", new PropertiesColumnWriter(NpgsqlDbType.Jsonb) }
+};
+
+var logger = new LoggerConfiguration().WriteTo.PostgreSQL(connectionString, "Logs", columnWriters, Serilog.Events.LogEventLevel.Debug, needAutoCreateTable: true).CreateLogger();
+
+Log.Logger = logger;
+builder.Logging.AddSerilog(logger);
+builder.Host.UseSerilog();
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -166,6 +184,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapHub<EventHub>("/eventHub");
+// app.MapHub<EventHub>("/eventHub");
 
 app.Run();

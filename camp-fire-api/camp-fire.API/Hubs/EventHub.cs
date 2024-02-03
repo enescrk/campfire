@@ -1,25 +1,25 @@
-// using camp_fire.API.IHubs;
-using camp_fire.API.Models;
-using Microsoft.AspNetCore.SignalR;
+// // using camp_fire.API.IHubs;
+// using camp_fire.API.Models;
+// using Microsoft.AspNetCore.SignalR;
 
-namespace camp_fire.API.Hubs;
+// namespace camp_fire.API.Hubs;
 
-public class EventHub : Hub
-{
-    // private readonly IUnitOfWork _unitOfWork;
+// public class EventHub : Hub
+// {
+//     // private readonly IUnitOfWork _unitOfWork;
 
-    // public EventHub(IUnitOfWork unitOfWork)
-    // {
-    //     _unitOfWork = unitOfWork;
-    // }
+//     // public EventHub(IUnitOfWork unitOfWork)
+//     // {
+//     //     _unitOfWork = unitOfWork;
+//     // }
 
-    public async Task SendMessage(string message)
-    {
-        await Clients.All.SendAsync("ReceiveMessage", message);
-    }
+//     public async Task SendMessage(string message)
+//     {
+//         await Clients.All.SendAsync("ReceiveMessage", message);
+//     }
 
-    public async Task SendEvent(EventHubResponseVM eventt)
-    {
-        await Clients.All.SendAsync("GetEvent", eventt);
-    }
-}
+//     public async Task SendEvent(EventHubResponseVM eventt)
+//     {
+//         await Clients.All.SendAsync("GetEvent", eventt);
+//     }
+// }

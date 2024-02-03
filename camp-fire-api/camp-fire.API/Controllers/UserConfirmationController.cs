@@ -1,6 +1,6 @@
 using Asp.Versioning;
 using camp_fire.API.Configurations;
-using camp_fire.API.Hubs;
+// using camp_fire.API.Hubs;
 using camp_fire.Application.IServices;
 using camp_fire.Application.Models.Request;
 using camp_fire.Domain.Entities;
@@ -16,16 +16,16 @@ public class UserConfirmationController : BaseApiController
 {
     private readonly ILogger<UserConfirmationController> _logger;
     private readonly IUserConfirmationService _usercomfirmationService;
-    private readonly IHubContext<EventHub> _eventHub;
+    // private readonly IHubContext<EventHub> _eventHub;
 
     public UserConfirmationController(ILogger<UserConfirmationController> logger,
-                            IUserConfirmationService usercomfirmationService,
-                            IHubContext<EventHub> eventHub
+                            IUserConfirmationService usercomfirmationService
+                            // IHubContext<EventHub> eventHub
                             ) : base(logger)
     {
         _logger = logger;
         _usercomfirmationService = usercomfirmationService;
-        _eventHub = eventHub;
+        // _eventHub = eventHub;
     }
 
     [HttpGet("{id}")]

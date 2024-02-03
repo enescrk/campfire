@@ -1,49 +1,49 @@
-using camp_fire.API.Configurations;
-using camp_fire.Application.IServices;
-using camp_fire.Application.Models;
-using camp_fire.Domain.Entities;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+// using camp_fire.API.Configurations;
+// using camp_fire.Application.IServices;
+// using camp_fire.Application.Models;
+// using camp_fire.Domain.Entities;
+// using Microsoft.AspNetCore.Authorization;
+// using Microsoft.AspNetCore.Mvc;
 
-namespace camp_fire.API.Controllers;
+// namespace camp_fire.API.Controllers;
 
-[Route("[controller]")]
-public class PageController : BaseApiController
-{
-    private readonly ILogger<PageController> _logger;
-    private readonly IPageService _pageService;
+// [Route("[controller]")]
+// public class PageController : BaseApiController
+// {
+//     private readonly ILogger<PageController> _logger;
+//     private readonly IPageService _pageService;
 
-    public PageController(ILogger<PageController> logger,
-                            IPageService pageService
-                            ) : base(logger)
-    {
-        _logger = logger;
-        _pageService = pageService;
-    }
+//     public PageController(ILogger<PageController> logger,
+//                             IPageService pageService
+//                             ) : base(logger)
+//     {
+//         _logger = logger;
+//         _pageService = pageService;
+//     }
 
-    [HttpGet]
-    [AllowAnonymous]
-    public async Task<IActionResult> Get(GetPagesRequestVM requestVM)
-    {
-        var result = await _pageService.GetAsync(requestVM);
+//     [HttpGet]
+//     [AllowAnonymous]
+//     public async Task<IActionResult> Get(GetPagesRequestVM requestVM)
+//     {
+//         var result = await _pageService.GetAsync(requestVM);
         
-        return Ok(new BaseApiResult { Data = result });
-    }
+//         return Ok(new BaseApiResult { Data = result });
+//     }
 
-    [HttpPost]
-    [AllowAnonymous]
-    public async Task<IActionResult> Post([FromBody] Page request)
-    {
-        var result = await _pageService.CreateAsync(request);
-        return Ok(result);
-    }
+//     [HttpPost]
+//     [AllowAnonymous]
+//     public async Task<IActionResult> Post([FromBody] Page request)
+//     {
+//         var result = await _pageService.CreateAsync(request);
+//         return Ok(result);
+//     }
 
-    [HttpPut]
-    [AllowAnonymous]
-    public async Task<IActionResult> Put([FromBody] PageResponseVM request)
-    {
-        var result = await _pageService.UpdateAsync(request);
+//     [HttpPut]
+//     [AllowAnonymous]
+//     public async Task<IActionResult> Put([FromBody] PageResponseVM request)
+//     {
+//         var result = await _pageService.UpdateAsync(request);
 
-        return Ok(result);
-    }
-}
+//         return Ok(result);
+//     }
+// }

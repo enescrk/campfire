@@ -145,7 +145,7 @@ public class ExperienceService : IExperienceService
         var agendaIds = experiences.SelectMany(x => x.AgendaIds).ToList();
         var agendas = await _agendaService.GetAsync(new GetAgendaRequestVM { Ids = agendaIds });
 
-        var boxIds = experiences.SelectMany(x => x.AgendaIds).ToList();
+        var boxIds = experiences.Select(x => x.BoxId.Value).ToList();
         var boxes = await _boxService.GetAsync(new GetBoxRequestVM { Ids = boxIds });
 
         var response = experiences.Select(x => new ExperienceResponse

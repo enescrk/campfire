@@ -142,19 +142,26 @@ public class ExperienceService : IExperienceService
 
         // var result = _mapper.Map<IList<Experience>, List<ExperienceResponse>>(experiences);
 
-        var agendaIds = experiences.SelectMany(x => x.AgendaIds).ToList();
-        var agendas = await _agendaService.GetAsync(new GetAgendaRequestVM { Ids = agendaIds });
+        List<AgendaResponseVM>? agendas = null;
+        List<BoxResponseVM>? boxes = null;
 
-        var boxIds = experiences.Select(x => x.BoxId.Value).ToList();
-        var boxes = await _boxService.GetAsync(new GetBoxRequestVM { Ids = boxIds });
+        var agendaIds = experiences.Where(x => x.AgendaIds != null).SelectMany(x => x.AgendaIds)?.ToList();
+
+        if (agendaIds.Count > 0)
+            agendas = await _agendaService.GetAsync(new GetAgendaRequestVM { Ids = agendaIds });
+
+        var boxIds = experiences.Where(x => x.BoxId.HasValue).Select(x => x.BoxId.Value).ToList();
+
+        if (boxIds.Count > 0)
+            boxes = await _boxService.GetAsync(new GetBoxRequestVM { Ids = boxIds });
 
         var response = experiences.Select(x => new ExperienceResponse
         {
             Id = x.Id,
-            Agendas = agendas.Where(y => x.AgendaIds.Contains(y.Id)).ToList(),
+            Agendas = agendas?.Where(y => x.AgendaIds.Contains(y.Id)).ToList(),
             AvailableDates = x.AvailableDates,
             BannerImage = x.BannerImage,
-            Box = boxes.FirstOrDefault(y => y.Id == x.BoxId),
+            Box = boxes?.FirstOrDefault(y => y.Id == x.BoxId),
             Categories = x.Categories,
             Content = x.Content,
             Currency = x.Currency,

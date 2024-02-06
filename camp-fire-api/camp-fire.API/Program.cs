@@ -87,6 +87,8 @@ Log.Logger = logger;
 builder.Logging.AddSerilog(logger);
 builder.Host.UseSerilog();
 
+logger.Information("api started");
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "ExperienceHub.API", Version = "v1" });

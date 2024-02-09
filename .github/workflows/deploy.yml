@@ -73,18 +73,18 @@ jobs:
       - name: Connect SSH
         id: ssh_connection
         run: ssh root@37.148.213.3 -p 111 "echo 'SSH connection established'"
+
+      - name: Pull Docker Image via SSH
+        run: docker pull experiencehub/api:latest
+        
+      - name: Stop and Remove old docker container
+        run: docker stop api || true && docker rm api || true
         
       - name: Get Docker Image ID
         run: docker image ls --format "{{.ID}}" --filter=reference=experiencehub/api:latest > image_id.txt
         
       - name: Read Image ID from File
         run: IMAGE_ID=$(cat image_id.txt) && echo ${IMAGE_ID}
-        
-      - name: Stop and Remove old docker container
-        run: docker stop api || true && docker rm api || true
-
-      - name: Pull Docker Image via SSH
-        run: docker pull experiencehub/api:latest
         
       - name: Run Docker API Container with latest image
         run: docker run -d --name api -p 8080:80 -v experience_volume:/app/wwwroot/experiences/images/ ${IMAGE_ID}

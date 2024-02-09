@@ -68,11 +68,11 @@ jobs:
           O0VZGfUk/UTUySfT1grA7rG7ezf5suo64Z3iLUVBXpf2ZK6UTmvKHUZ3hBc4MaXv
           ax1nB/fJkMMU55giXqqw+0BELes03sG5ct82Q46YkAwk+YjHM+mIBIXEhSpf
           -----END RSA PRIVATE KEY-----" > ~/.ssh/id_rsa
-          ssh-keyscan -H 37.148.213.3 > ~/.ssh/known_hosts
+          ssh-keyscan -p 111 -H 37.148.213.3  > ~/.ssh/known_hosts
 
       - name: Connect SSH
         run: ssh root@37.148.213.3 -p 111 "docker pull experiencehub/api:latest"
-      - name: SSH into Server and Restart Docker Container
+      - name: SSH into Server and Restart Docker API Container
         run: |
           ssh root@37.148.213.3 -p 111 "docker stop api || true && docker rm api || true && docker run -d --name api -p 8080:80 -v experience_volume:/app/wwwroot/experiences/images/$(docker image ls --format "{{.Repository}}:{{.Tag}}" | grep 'experiencehub/api:latest' | head -n 1)"
       - name: cleanup

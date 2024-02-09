@@ -78,6 +78,6 @@ jobs:
         run: IMAGE_ID=$(cat image_id.txt)
       - name: SSH into Server and Restart Docker API Container
         run: |
-          ssh root@37.148.213.3 -p 111 "docker stop api || true && docker rm api || true && docker run -d --name api -p 8080:80 -v experience_volume:/app/wwwroot/experiences/images/ $IMAGE_ID"
+          ssh root@37.148.213.3 -p 111 "docker stop api || true && docker rm api || true && docker run -d --name api -p 8080:80 -v experience_volume:/app/wwwroot/experiences/images/ ${IMAGE_ID}"
       - name: cleanup
         run: rm -rf ~/.ssh

@@ -1,0 +1,79 @@
+name: Deploy to Server
+
+on:
+  workflow_run:
+    workflows: ["Docker Build and Push"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up SSH
+        run: |
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo "-----BEGIN RSA PRIVATE KEY-----
+          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
+          -----END RSA PRIVATE KEY-----" > ~/.ssh/id_rsa
+          ssh-keyscan -p 111 -H 37.148.213.3  > ~/.ssh/known_hosts
+
+      - name: Connect SSH
+        run: ssh root@37.148.213.3 -p 111 "docker pull experiencehub/api:latest"
+      - name: SSH into Server and Restart Docker API Container
+        run: |
+          ssh root@37.148.213.3 -p 111 "docker stop api || true && docker rm api || true && docker run -d --name api -p 8080:80 -v experience_volume:/app/wwwroot/experiences/images/$(docker image ls --format "{{.Repository}}:{{.Tag}}" | grep 'experiencehub/api:latest' | head -n 1)"
+      - name: cleanup
+        run: rm -rf ~/.ssh

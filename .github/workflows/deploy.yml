@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  Build and Push to Docker Registry:
+  build-and-push-to-docker-registry:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,7 +25,7 @@ jobs:
           docker build -t experiencehub/api:latest .
           docker push experiencehub/api:latest
           
-  Deploy Application to Server:
+  deploy-application-to-server:
     runs-on: ubuntu-latest
 
     steps:

@@ -80,14 +80,8 @@ jobs:
       - name: Stop and Remove old docker container
         run: docker stop api || true && docker rm api || true
         
-      - name: Get Docker Image ID
-        run: docker image ls --format "{{.ID}}" --filter=reference=experiencehub/api:latest > image_id.txt
-        
-      - name: Read Image ID from File
-        run: IMAGE_ID=$(cat image_id.txt) && echo ${IMAGE_ID}
-        
       - name: Run Docker API Container with latest image
-        run: docker run -d --name api -p 8080:80 -v experience_volume:/app/wwwroot/experiences/images/ $IMAGE_ID
+        run: docker run -d --name api -p 8080:80 -v experience_volume:/app/wwwroot/experiences/images/ experiencehub/api:latest
         
       - name: cleanup
         run: rm -rf ~/.ssh

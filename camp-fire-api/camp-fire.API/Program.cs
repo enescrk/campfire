@@ -81,7 +81,8 @@ IDictionary<string, ColumnWriterBase> columnWriters = new Dictionary<string, Col
     {"Model", new PropertiesColumnWriter(NpgsqlDbType.Jsonb) }
 };
 
-var logger = new LoggerConfiguration().WriteTo.PostgreSQL(connectionString, "Logs", columnWriters, Serilog.Events.LogEventLevel.Debug, needAutoCreateTable: true).CreateLogger();
+var logger = new LoggerConfiguration().WriteTo.PostgreSQL(connectionString, "Logs", columnWriters,
+Serilog.Events.LogEventLevel.Debug, needAutoCreateTable: true, useCopy: false).CreateLogger();
 
 Log.Logger = logger;
 builder.Logging.AddSerilog(logger);

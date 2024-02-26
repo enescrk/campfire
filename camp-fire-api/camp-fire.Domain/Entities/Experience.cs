@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using camp_fire.Domain.Entities.Base;
 
 namespace camp_fire.Domain.Entities;
@@ -24,4 +25,7 @@ public class Experience : BaseEntity
     public List<DateTime>? AvailableDates { get; set; }
     public int? ModeratorId { get; set; }
     public List<string>? Warnings { get; set; }
+
+    [Column(TypeName = "jsonb")]
+    public string? VideoContent { get; set; }
 }

@@ -27,6 +27,7 @@ public class ExperienceResponse
     public List<DateTime>? AvailableDates { get; set; }
     public int? ModeratorId { get; set; }
     public List<string>? Warnings { get; set; }
+    public string? VideoContent { get; set; }
 }
 
 public class GetExperienceRequest
@@ -66,6 +67,7 @@ public class CreateExperienceRequest
     public int? EnterpriceLevelId { get; set; } //
     public List<DateTime>? AvailableDates { get; set; }
     public List<string> Warnings { get; set; }
+    public string? VideoContent { get; set; }
 }
 
 public class AddModeratorRequest

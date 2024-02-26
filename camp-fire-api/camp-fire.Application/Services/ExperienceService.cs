@@ -177,7 +177,8 @@ public class ExperienceService : IExperienceService
             Summary = x.Summary,
             Title = x.Title,
             VideoUrl = x.VideoUrl,
-            Warnings = x.Warnings
+            Warnings = x.Warnings,
+            VideoContent = x.VideoContent
         }).ToList();
 
         return await Task.FromResult(response);
